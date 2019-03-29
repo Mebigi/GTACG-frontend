@@ -1,0 +1,77 @@
+<style>
+	.gridA {
+    display: grid;
+    grid-template-columns: auto 5px 1fr 20px auto 5px 1fr 20px auto 5px 70px;
+    grid-template-areas: 'labelA . objA . labelB . objB . labelC . objC';
+    align-items: center;
+    margin:20px;
+}
+@media all and (max-width: 600px) {
+    .gridA {
+        display: grid;
+        grid-template-columns: auto 5px 1fr;
+        grid-template-areas: 'labelA . objA' 'labelB . objB' 'labelC . objC';
+        align-items: center;
+        margin-top:20px;
+        margin-bottom:20px;
+        margin-left:0px;
+        margin-right:0px;
+    }
+    #example-table {	
+        height:calc(-210px + 100vh) !important;
+    }
+}
+
+</style>
+
+		<div style="grid-area:lineB" class="ui attached menu">
+			<div class="ui dropdown link item">
+				<span class="text"><i class="download icon"></i>Download</span>
+				<div class="menu">
+					<a id="download-csv" class="item">Download CSV</a>
+					<a id="download-json" class="item">Download jSON</a>
+					<a id="download-xlsx" class="item">Download XLSX</a>
+				</div>
+			</div>
+			<div class="right menu">
+				<a class="item" id="saveSubPage"><i class="save icon"></i></a>
+				<a class="item" id="removePage"><i class="x icon"></i></a>
+			</div>
+		</div>
+		<div style="grid-area:lineC" class="gridA">
+			<span style="grid-area:labelA;">Group:</span>
+			<div id="group" style="grid-area:objA;" class="ui fluid selection dropdown">
+				<input type="hidden">
+				<input name="gender" type="hidden">
+				<i class="dropdown icon"></i>
+				<div class="text"></div>
+				<div class="menu">
+					<script>
+						for(var i = 0; i < gs.length; i++)
+							document.write("<div class=\"item\" data-value=\"" + i + "\">" + gs[i].name + "</div>");						
+					</script>
+				</div>
+			</div>
+
+			<span style="grid-area:labelB;">Type:</span>
+			<div id="type" style="grid-area:objB;" class="ui fluid selection dropdown">
+				<input type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Type</div>
+						<div class="menu">
+					</div>
+				</input>
+			</div>
+
+			<span style="grid-area:labelC;">Set of families:</span>
+			<div id="conformation" style="grid-area:objC;"class="ui fluid selection dropdown">
+				<input type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Set</div>
+						<div class="menu">
+					</div>
+				</input>
+			</div>
+
+		</div>
+		<div style="grid-area:lineData;" id="example-table"></div>

@@ -1,0 +1,238 @@
+html, body, .viewport {
+    width: 100%;
+}
+
+.ui-controlgroup-vertical {
+    width: 150px;
+}
+
+.ui-controlgroup.ui-controlgroup-vertical>button.ui-button,
+.ui-controlgroup.ui-controlgroup-vertical>.ui-controlgroup-label {
+    text-align: center;
+}
+
+#car-type-button {
+    width: 120px;
+}
+
+.ui-controlgroup-horizontal .ui-spinner-input {
+    width: 20px;
+}
+
+.settingsGridA {
+    display: grid;
+    grid-template-columns: minmax(80px,150px) 200px 10px auto;
+    grid-template-areas:
+        'labelA objA . objA2'
+        'labelB objB . objB2'
+        ;
+}
+
+.settingsGridB {
+    display: grid;
+    grid-template-columns: 150px minmax(100px, 500px);
+    grid-template-areas:
+        'labelA objA'
+        'labelB objB';
+}
+
+.settingsGridC {
+    display: grid;
+    grid-template-columns: minmax(170px,300px) 20px minmax(70px,100px) 20px minmax(70px,100px) 20px minmax(70px,100px) 20px 200px;
+    grid-template-areas: 'objA . objB . objC . objD . objE';
+    align-items: end;
+}
+
+.gridTable {
+    width:100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: 
+        'header'
+        'data'
+        'footer';
+}
+/*#treeType {
+    width:300px;
+}*/
+#treeZoom {
+    width:150px;
+    margin-left:5px;
+    margin-right:10px;
+}
+
+@media only screen and (max-width: 600px) {
+    .settingsGridA {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'labelA' 
+            'objA'
+            'labelB'
+            'objB'
+            'objB2'
+            ;
+    }
+    .settingsGridB {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'labelA'
+            'objA'
+            'labelB'
+            'objB';
+    }
+    #treeZoom {
+        width:75px;
+        margin-left:5px;
+        margin-right:10px;
+    }
+}
+
+@media all and (max-width: 720px) {
+    .settingsGridC {
+        display: grid;
+        grid-template-columns: minmax(170px,300px) 20px minmax(70px,100px) 20px minmax(70px,100px);
+        grid-template-areas:
+            'objA . objB . objC'
+            'objD . objE objE objE';
+    }
+}
+
+div.text {
+    display:inline-block;
+}
+div.smallText {
+    display:none;
+}
+
+@media all and (max-width: 650px) {
+    .settingsGridC {
+        display: grid;
+        grid-template-columns: 1fr 20px 1fr;
+        grid-template-areas:
+            'objA objA objA'
+            'objB . objC'
+            'objD . objE';
+    }
+    div.text {
+        display:none !important;
+    }
+    div.smallText {
+        display:inline-block !important;
+    }
+
+    #divTree >  .sectionHeaderIcon {
+        grid-template-areas: 'icon label . . obj obj' 'obj2 obj2 obj2 obj2 obj2 obj2';
+    }
+    #divTree > .sectionHeaderIcon > .sectionHeaderObj2 {
+        width:unset !important;
+    }
+    #phylogram {
+        height:calc(100vh - 132px) !important;
+    }
+}
+
+#scatter_chart {
+    /*width:80%;*/
+}
+#scatterLegendDiv {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+}
+#scatterType {
+    width:200px;
+    padding-left:5px;
+}
+@media all and (max-width: 400px) {
+    #scatter_chart {
+        width:100%;
+    }
+    #scatterLegendDiv {
+        display:none !important;
+    }
+    #scatterType {
+        width:120px !important;
+        max-width:120px !important;
+        min-width:120px !important;
+    }
+}
+
+#tabsGenomes {
+    grid-area:data;
+    overflow:hidden;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+        'data2'
+        'footer';
+}
+
+#tabsRg {
+    grid-area:data;
+    overflow:hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        'rgHeader'
+        'rgTable';
+}
+
+#tabRg {
+    grid-area:rgHeader;
+    
+}
+
+.tabRgN {
+    height: calc(100vh - 304px);
+}
+
+.ui.toggle.checkbox.inverted .box::before, .ui.toggle.checkbox.inverted label::before {
+    background-color: #aaa !important;
+}
+
+#treeType *, #scatterType * {
+    color: black !important;
+    font-weight: normal !important;
+}
+
+#treeType, #field > .menu {
+    max-height:60vh !important;
+}
+
+#pusher {
+    display:flex;
+    width:100%;
+}
+
+#phylogram {
+    width:100%;
+}
+
+#pointsPusher {
+    display: grid;
+    grid-template-columns: 1fr 20em;
+    grid-template-rows: auto;
+    grid-template-areas: 'graph legend';
+}
+
+#scatter_chart {
+    grid-area: graph;
+}
+
+#scatterLegendDiv {
+    grid-area: legend;
+    height: calc(100vh - 100px);
+}
+
+@media only screen and (max-width: 600px) {
+    #pointsPusher {
+        grid-template-columns: 1fr;
+        grid-template-areas: 'graph'
+    }
+    #scatterLegendDiv {
+        display: none;
+    }
+}

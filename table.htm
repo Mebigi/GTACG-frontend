@@ -1,0 +1,815 @@
+<style>
+	.jqstooltip {
+		width: 70px;
+		height: 35px;
+	}
+
+	.jqsfield {
+		font: bold 10px arial san serif !important;
+		text-align: center !important;
+	}
+
+	#pageHeader {
+		margin-bottom:0px;
+	}
+
+	body {
+		height:100%;
+	}
+
+	#example-table {
+		height:calc(100vh - 40px);
+	}
+
+	#menuAlt {
+		display: none !important;
+	}
+
+	@media all and (max-width: 900px) {
+		.item > div.text, ui.dropdown.item > div.text {
+			display:none !important;
+		}
+	}
+	@media all and (max-width: 520px) {
+		#menuSidebarGenemes, #menuSidebarColumns {
+			display:none;
+		}
+		#menuAlt {
+			display: flex !important;
+		}
+		#example-table {
+			height:calc(100vh - 80px);
+		}
+	}
+
+	.dropdown.icon {
+		padding-top: 0px !important;
+	}
+</style>
+		<div style="grid-area:lineB" class="ui attached demo menu">
+			<div class="ui dropdown link item">
+				<i class="download icon"></i><div class="text">Download</div>
+				<div class="menu">
+					<div class="item">
+						<i class="dropdown icon"></i>
+						<span class="text">Raw Data</span>
+						<div class="right menu">
+							<a id="download-csv" class="item">Download CSV</a>
+							<a id="download-json" class="item">Download jSON</a>
+							<a id="download-xlsx" class="item">Download XLSX</a>
+						</div>
+					</div>
+					<div class="item">
+						<i class="dropdown icon"></i>
+						<span class="text">Presence/Absense Matrix</span>
+						<div id="menuAbMatrix" class="right menu">
+							<a class="item" id="downloadAbMatrixGenome" onclick="downloadAbMatrix(false);">Genome</a>
+							<script>
+								if(gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+								}
+								for(var i = 0; i < gs.length; i++) {
+									document.write('<a class="item" onclick="downloadAbMatrix(false, ' + i + ');">' + gs[i].name + '</a>');
+								}
+							</script>
+						</div>
+					</div>
+					<div class="item">
+						<i class="dropdown icon"></i>
+						<span class="text">Distance Matrix</span>
+						<div class="right menu">
+							<a class="item" id="downloadDistanceMatrixEuclidian" onclick="downloadDistanceMatrix(true);">Euclidean</a>
+							<a class="item" id="downloadDistanceMatrixManhattan" onclick="downloadDistanceMatrix(false);">Manhattan</a>
+						</div>
+					</div>
+					<a class="item" id="downloadCharMatrix" onclick="downloadCharMatrix();">Characteristics Matrix</a>
+					<div class="divider"></div>
+					<a class="item" id="downloadRoary" onclick="downloadRoary()">Roary Outputs</a>
+
+				</div>
+			</div>
+			<a id="menuSidebarGenomes" class="item"><i class="sidebar icon"></i><div class="text" style="margin-right:0.4em;">Filter </div>Genomes</a>
+			<a id="menuSidebarColumns" class="item"><i class="sidebar icon"></i><div class="text" style="margin-right:0.4em;">Filter </div>Columns</a>
+			<a id="clearFilters" class="item"><i class="trash icon"></i><div class="text">Clear filters</div></a>
+			<a id="clearHeaderFilters" class="item"><i class="trash icon"></i><i class="heading icon"></i><div class="text">Clear header filters</div></a>
+			<div class="ui dropdown link item">
+				<i class="list ul icon"></i><div class="text">Group by</div>
+				<div class="menu">
+					<a id="groupTableClear" class="item">Clear</a>
+					<div class="ui divider"></div>
+					<a id="groupTableKey" class="item">Key</a>
+					<a id="groupTableFunc" class="item">Function</a>
+					<a id="groupTableNumFunc" class="item"># Function</a>
+					<a id="groupTableSeqs" class="item"># Sequences</a>
+					<a id="groupTableGens" class="item"># Genomes</a>
+					<a id="groupTableParas" class="item"># Paralogs</a>
+					<div class="ui divider"></div>
+					<a id="groupTablePhylo" class="item">Phylogeny</a>
+					<a id="groupTableCod" class="item">Genomes</a>
+				</div>
+			</div>
+			<div class="right menu">
+				<a class="item" id="saveSubPage"><i class="save icon"></i></a>
+				<a class="item" id="removePage"><i class="x icon"></i></a>
+			</div>
+
+		</div>
+		<div id="menuAlt" style="grid-area:lineC" class="ui attached demo menu">
+			<a id="menuSidebarGenomesAlt" class="item"><i class="sidebar icon"></i><div class="text" style="margin-right:0.4em;">Filter </div>Genomes</a>
+			<a id="menuSidebarColumnsAlt" class="item"><i class="sidebar icon"></i><div class="text" style="margin-right:0.4em;">Filter </div>Columns</a>
+		</div>
+
+		<div id="pusherTable" class="pusher" style="grid-area:lineData;height:100%">
+			<div id="example-table"></div>
+			<div id="sidebarColumns" class="ui right vertical inverted sidebar menu">
+				<div style="margin-top: 20px;margin-bottom:20px;" class="ui horizontal divider">Columns</div>
+				<div id="sidebarColumnsList" class="ui list">
+				  </div>
+			</div>
+			<div id="sidebarGenomes" class="ui right vertical inverted sidebar menu">
+				<button id="filterSidebarGenomesList1" style="margin-top: 20px;margin-bottom:20px;" class="ui fluid primary button">Filter Genomes</button>
+				<div class="line">
+					<span>All</span>
+					<div id="sidebarGenomesFilterAll" style="overflow: initial;" class="ui inverted selection fluid dropdown clearable obj">
+						<input type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text"><i class="x icon"></i> Not filter</div>
+						<div class="menu">
+							<div class="item" data-value="*"><i class="info icon"></i> Ignore</div>
+							<div class="item" data-value="0"><i class="thumbs down icon"></i> Must not have</div>
+							<div class="item" data-value="1"><i class="thumbs up icon"></i> Must have</div>
+						</div>
+					</div>
+				</div>
+				<div class="ui divider"></div>
+				<div id="sidebarGenomesList" class="sidebar"></div>
+				<button id="filterSidebarGenomesList2" style="margin-top: 20px;margin-bottom:20px;" class="ui fluid primary button">Filter Genomes</button>
+			</div>
+		</div>
+
+<script type="text/javascript">	
+	var url = new URL(window.location.href);
+	function onLoad() {
+		$('#sidebarGenomes').sidebar({dimPage: false,exclusive:true,transition: 'overlay', context: $('#pusher')}).sidebar('attach events', '#menuSidebarGenemes');
+		$('#sidebarGenomes').sidebar({dimPage: false,exclusive:true,transition: 'overlay', context: $('#pusher')}).sidebar('attach events', '#menuSidebarGenemesAlt');
+		$('#sidebarColumns').sidebar({dimPage: false,exclusive:true,transition: 'overlay', context: $('#pusher')}).sidebar('attach events', '#menuSidebarColumns');
+		$('#sidebarColumns').sidebar({dimPage: false,exclusive:true,transition: 'overlay', context: $('#pusher')}).sidebar('attach events', '#menuSidebarColumnsAlt');
+		$('.ui.link.dropdown').dropdown({action: 'hide'});
+
+		vertical = url.searchParams.get("hv") == "v";
+		col = eval(url.searchParams.get("col"));
+		dataset = url.searchParams.get("set");
+		datasetAll = eval(url.searchParams.get("all"));
+		requestGs = eval(url.searchParams.get("gs"));
+		cod = url.searchParams.get("cod");
+		phylo = url.searchParams.get("phylo");
+		fglobal = eval(url.searchParams.get("fglobal"));
+		fheaders = eval(url.searchParams.get("fheaders"));
+		sorters = eval(url.searchParams.get("sorters"));
+		groupBy = url.searchParams.get("groupBy");
+	
+		if(col.indexOf("func")>-1)	columnTableFunc.frozen=true;
+		if(col.indexOf("doms")>-1)	columnTableDoms.frozen=true;
+		if(col.indexOf("coef")>-1)	columnTableCoef.frozen=true;
+		if(col.indexOf("nodes")>-1)	columnTableNumSeqs.frozen=true;
+		if(col.indexOf("gens")>-1)	columnTableNumGens.frozen=true;
+
+		codIgnore = false;
+		if(cod.replace('*', '') != cod) {
+			codIgnore = true;
+			columnTableTNodes.cssClass = "oldData";
+			columnTableTDist.cssClass = "oldData";
+			columnTableMast.cssClass = "oldData";
+			columnTableEMast.cssClass = "oldData";
+
+			columnTableTNodes.visible = false;
+			columnTableTDist.visible = false;
+			columnTableMast.visible = false;
+			columnTableEMast.visible = false;
+		}
+
+		totalGenomesRg = [];
+		for(let i = 0; i < gs.length; i++) {
+			totalGenomesRg.push(Array(gs[i].childs.length).fill(0));
+			for(let j = 0; j < cod.length; j++) {
+				if(cod[j] != '*')
+					totalGenomesRg[i][genomes[j].rg[i]]++;
+			}
+		}
+
+		var columns;
+		if(vertical)
+			columns = getIndexBaseColumnsVertical(dataset)
+		else {
+			columns = getIndexBaseColumns(dataset);
+			for(var i = 0; i < gs.length; i++) {
+				if(requestGs[i]) {
+					var sub = [];
+					for(var j = 0; j < gs[i].childs.length; j++) {
+						var field = "rg" + i + ".g" + j;
+						sub.push({title:gs[i].childs[j].name, field:field, columns:[
+							{title:"MIST", field:field + ".mist", columns:[
+								{title:"#", field:field + ".c1", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, visible:!codIgnore},
+								{title:"%", field:field + ".c2", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, align:"right", formatter:"money", formatterParams:{precision:2,symbol:"%",symbolAfter:true}, visible:!codIgnore}
+							]},
+							{title:"Sequences", field:field + ".seqs", columns:[
+								{title:"#", field:field + ".c3", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader},
+								//{title:"%", field:field + ".c4", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, align:"right", formatter:"money", formatterParams:{precision:2,symbol:"%",symbolAfter:true}}
+								{title:"%", field:field + ".c4", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, align:"right", formatter:"money", formatterParams:{precision:2,symbol:"%",symbolAfter:true}, mutator:function(value, data, type, params, component){if(data["rg"+params[0]] == undefined || data["rg"+params[0]]["g"+params[1]] == undefined) return undefined; return 100*(data["rg"+params[0]]["g"+params[1]].c3/data.seqs);}, mutatorParams:[i,j]}
+							]},
+							{title:"Genomes", field:field + ".gens", columns:[
+								{title:"#", field:field + ".c5", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader},
+								//{title:"A%", field:field + ".c6", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, align:"right", formatter:"money", formatterParams:{precision:2,symbol:"%",symbolAfter:true}},
+								{title:"A%", field:field + ".c6", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, align:"right", formatter:"money", formatterParams:{precision:2,symbol:"%",symbolAfter:true}, mutator:function(value, data, type, params, component){if(data["rg"+params[0]] == undefined || data["rg"+params[0]]["g"+params[1]] == undefined) return undefined; return 100*(data["rg"+params[0]]["g"+params[1]].c5/data.gens);}, mutatorParams:[i,j]},
+								//{title:"B%", field:field + ".c7", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, align:"right", formatter:"money", formatterParams:{precision:2,symbol:"%",symbolAfter:true}}]},
+								{title:"B%", field:field + ".c7", sorter:"number", headerFilter:true, headerFilterFunc:numFilter, width:70, headerTooltip:customHeader, align:"right", formatter:"money", formatterParams:{precision:2,symbol:"%",symbolAfter:true}, mutator:function(value, data, type, params, component){if(data["rg"+params[0]] == undefined || data["rg"+params[0]]["g"+params[1]] == undefined) return undefined; if(totalGenomesRg[params[0]][params[1]] == 0) return 0; return 100*(data["rg"+params[0]]["g"+params[1]].c5/totalGenomesRg[params[0]][params[1]]);}, mutatorParams:[i,j]},
+							]},
+							{title:"Dissimilarity", field:field + ".c8", headerFilter:true, headerFilterFunc:numFilter, headerTooltip:customHeader, width:120, formatter:"money", formatterParams:{precision:10}, visible:!codIgnore},
+						]});
+					}
+					columns.push({title:gs[i].name, field:"rg" + i, columns:sub});
+				}
+			}
+		}
+
+		table = new Tabulator("#example-table", {
+			progressiveRender:       true,
+			progressiveRenderSize:   100,
+			progressiveRenderMargin: 100,
+			virtualDomBuffer:100,
+			columnVertAlign:"bottom",
+			resizableRows:false,
+			movableRows: false,
+			resizableColumns:false,
+			tooltipsHeader:true,
+			columns: columns,
+			groupToggleElement:"header",
+			groupHeader:function(value, count, data, group){
+				/*if(group.group.field == "phylo") {
+					if(value == undefined)
+						return "<span style='color:#d00; margin-left:10px;width:100px;display:inline-block;'>(" + count + " item)</span><span style='color:#d00;margin-left: 0px;'>N/A</span>";
+					var newValue = value.split(",");
+		
+					for(var i = 0; i < newValue.length; i++) {
+						var v = newValue[i].replace(/\(/g,"").replace(/\)/g,"");
+						if(!isNaN(parseInt(v)))
+							newValue[i] = newValue[i].replace(v, genomes[parseInt(v)].abbrev);
+					}
+					newValue = newValue.join(",");
+
+					return "<span style='color:#d00; margin-left:10px;width:100px;display:inline-block;'>(" + count + " item)</span>" + newValue;
+				}
+				else */if(group.getKey() == "cod") {
+					if(value.indexOf("0") == -1) {
+						return "<span style='color:#d00; margin-left:10px;width:100px;display:inline-block;'>(" + count + " item)</span><span style='color:#d00;margin-left: 0px;'>Core-genome</span>";
+					}
+					var newValue = "";
+					for(var i = 0; i < value.length; i++)
+						if(value.charAt(i)=="1")
+							newValue += ", " + genomes[i].abbrev;
+					return "<span style='color:#d00; margin-left:10px;width:100px;display:inline-block;'>(" + count + " item)</span>" + newValue.substring(2);
+				}
+				saidaTeste = group;
+				return "<span style='color:#d00; margin-left:10px;width:100px;display:inline-block;'>(" + count + " item)</span>" + value;
+			},
+		});
+
+		/*if(vertical == true) 
+			map = mapVertical;
+		else {
+			map = [{key:"files",values:["fasta", "alin", "tree"]}];
+			for(var i = 0; i < gs.length; i++) {
+				if(requestGs[i]) {
+					var vetI = [];
+					for(var j = 0; j < gs[i].childs.length; j++) {
+						var vetJ = [];
+						for(var k = 1; k <= 8; k++) {
+							vetI.push("rg" + i + ".g" + j + ".c" + k);
+							vetJ.push("rg" + i + ".g" + j + ".c" + k);
+						}
+						map.push({key:"rg" + i + ".g" + j,values:vetJ});
+					}
+					map.push({key:"rg" + i,values:vetI});
+				}
+			}
+		}
+
+		var jsTreeData;
+		if(vertical == true)
+			jsTreeData = getIndexJsTreeDataVertical(dataset);
+		else {
+			jsTreeData = getIndexJsTreeData(dataset, col);
+			for(var i = 0; i < gs.length; i++) {
+				if(requestGs[i]) {
+					var vet = [];
+					for(var j = 0; j < gs[i].childs.length; j++) {
+						vet.push({"text":gs[i].childs[j].name, "id":"rg" + i + ".g" + j});
+					}
+					jsTreeData.push({"text": gs[i].name, "id":"rg" + i, "state" : { "selected" : true },"children" : vet});
+				}
+			}
+		}
+		$(function () {$('#jstreeFields').jstree({"checkbox" : {"keep_selected_style" : false},'plugins':["wholerow","checkbox"], 'core' : {'data': jsTreeData}});});*/
+		allColumns = table.getColumnDefinitions();
+		var jsTreeData = makeTree(allColumns, col);
+		$(function () {$('#jstreeFields').jstree({"checkbox" : {"keep_selected_style" : false},'plugins':["wholerow","checkbox"], 'core' : {'data': jsTreeData}});});
+
+		$('#jstreeFields').on("changed.jstree", function (e, data) {
+			var allColumns = table.getColumnDefinitions();
+			if(data.action == 'deselect_node' || data.action == 'select_node') {
+				selected = data.node.state.selected;
+				var column = findColumn(allColumns, data.node.id);
+				showColumn(column, selected);
+				if(selected) {
+					var parents = getParentColumns(allColumns, data.node.id);
+					if(parents != null)
+						for(var i = 0; i < parents.length; i++)
+							table.showColumn(parents[i].field);
+				}
+				
+			}
+		});
+
+		data = [];
+		if(dataset == "h" || dataset == "e")
+			data = dataHomo;
+		else if(dataset == "d")
+			data = dataDoms;
+		else if(dataset == "o")
+			data = dataOrthos;
+
+		if((dataset == "o" || dataset == "d") && (datasetAll)) {
+			var field = "doms";
+			if(dataset == "o")
+				field = "orthos";
+
+			for(var i = 0; i < dataHomo.length; i++) {
+				if(dataHomo[i][field] == undefined)
+					data.push(dataHomo[i]);
+			}
+		}
+
+		data = data.filter(function(item) {
+			if(dataset == "e") {
+				if(item.gens == 1)
+					return true;
+				return false;
+			}
+			totalFilter = {};
+			for(var i = 0; i < cod.length; i++)
+				if(cod[i] != '?' && cod[i] != '1' && cod[i] != '0' && cod[i] != '*')
+					totalFilter[cod[i]] = 0;
+			let count = 0;
+			for(var i = 0; i < cod.length; i++) {
+				if(cod[i] != '*') {
+					if(cod[i] != '?') {
+						if(cod[i] == '1' || cod[i] == '0') {
+							if(item.cod[i] != cod[i])
+								return false;
+							else if(item.cod[i] == '1')
+								count++;
+						}
+						else {
+							if(item.cod[i] == '1')
+								totalFilter[cod[i]]++;
+						}
+					}
+					if(item.cod[i] == '1')
+						count++;
+				}
+				else if(item.cod[i] == '1') {
+					item.gens -= 1;
+					item.seqs -= item.fam[i].length;
+					item.paras = item.seqs - item.gens;
+					for(let j = 0; j < requestGs.length; j++) {
+						if(requestGs[j]) {
+							let type = item["rg"+j]["g" + genomes[i].rg[j]];
+							type.c3 -= item.fam[i].length;
+							type.c4 = type.c3/item.seqs;
+							type.c5 -= 1;
+						}
+					}
+				}
+			}
+			if(count == 0)
+				return false;
+			for(var key in totalFilter)
+				if(totalFilter[key] == 0)
+					return false;
+			if(phylo != null && item.phylo != phylo)
+				return false;
+			return true;
+		});
+		if(vertical == true) {
+			var id = 0;
+			dataVertical = [];
+			for(i = 0; i < data.length; i++) {
+				var d = data[i];
+				obj = {key: d.key, doms: d.doms, func: d.func, numFunc: d.numFunc, divers: d.divers, coef: d.coef, seqs: d.seqs, gens: d.gens, paras: d.paras, fasta: d.fasta, alin: d.alin, tree: d.tree}; 
+				obj = {key: d.key, doms: d.doms, orthos: d.orthos, func: d.func, numFunc: d.numFunc, divers: d.divers, coef: d.coef, seqs: d.seqs, gens: d.gens, paras: d.paras, fasta: d.fasta, alin: d.alin, tree: d.tree}; 
+				for(var j = 0; j < gs.length; j++) {
+					if(requestGs[j]) {
+						for(var k = 0; k < gs[j].childs.length; k++) {
+							if(d["rg" +j]["g" + k].c1 > 0)
+								dataVertical.push(Object.assign({id: id++, gt:gs[j].name, t:gs[j].childs[k].name, g: d["rg" +j]["g" + k]}, obj));
+						}
+					}
+				}
+			}
+			data = dataVertical;
+		}
+		table.setData(data);
+		table.setGroupStartOpen(false);
+		$("#download-csv").click(function(){
+			table.download("csv", "data.csv");
+		});
+		$("#download-json").click(function(){
+			table.download("json", "data.json");
+		});
+		$("#download-xlsx").click(function(){
+			table.download("xlsx", "data.xlsx");
+		});
+
+		for(var i = 0; i < cod.length; i++) {
+			if(cod[i] != '?') {
+				$("#ts-" + i).val(parseInt(cod[i]));
+				$("#ts-" + i).attr("disabled", true);
+			}
+		}
+		if(fheaders != null)
+			for (var i = 0; i < fheaders.length; i++) {
+				table.setHeaderFilterValue(fheaders[i][0], fheaders[i][1]);
+			}
+
+		if(fglobal != null)
+			for (var i = 0; i < fglobal.length; i++) {
+				table.setFilter(fglobal[i][0], fglobal[i][1], fglobal[i][2]);
+			}
+		if(sorters != null) {
+			setSorters = [];
+			for (var i = 0; i < sorters.length; i++) {
+				setSorters.push({column:sorters[i][0], dir:sorters[i][1]});
+			}
+			table.setSort(setSorters);
+		}
+		if(groupBy != null && groupBy != "")
+			groupTable(groupBy);
+	}
+
+	makeTree = function(columns, frozen) {
+		if(columns == null || columns.length == 0)
+			return null;
+		var vet = [];
+		for(var i = 0; i < columns.length; i++) {
+			if(columns[i].title != "") {
+				if(columns[i].columns == undefined) {
+					if(columns[i].field == 'key' || (frozen == null || frozen.indexOf(columns[i].field) >-1))
+						vet.push({text:columns[i].title, id:columns[i].field, state:{selected:(columns[i].visible == undefined || columns[i].visible),disabled: true}});
+					else
+						vet.push({text:columns[i].title, id:columns[i].field, state:{selected:(columns[i].visible == undefined || columns[i].visible)}});
+				}
+				else
+					vet.push({text:columns[i].title, id:columns[i].field, state:{hidden:false,opened:false,selected:true}, children: makeTree(columns[i].columns)});
+			}
+		}
+		return vet;
+	};
+
+	findColumn = function(columns, field) {
+		for(var i = 0; i < columns.length; i++) {
+			if(columns[i].field == field)
+				return columns[i];
+			if(columns[i].columns != undefined && columns[i].columns.length > 0) {
+				result = findColumn(columns[i].columns, field);
+				if(result != null)
+					return result;
+			}
+			
+		}
+		return null;
+	}
+
+	getParentColumns = function(columns, field) {
+		for(var i = 0; i < columns.length; i++) {
+			if(columns[i].field == field)
+				return [];
+			if(columns[i].columns != undefined && columns[i].columns.length > 0) {
+				result = getParentColumns(columns[i].columns, field);
+				if(result != null) {
+					result.push(columns[i]);
+					return result;
+				}
+			}
+			
+		}
+		return null;
+	}
+	showColumn = function(column, show) {
+		if(column.columns != undefined && column.columns.length > 0) {
+			for(var i = 0; i < column.columns.length; i++){
+				showColumn(column.columns[i], show);
+			}
+		}
+		else {
+			if(show)
+				table.showColumn(column.field);
+			else
+				table.hideColumn(column.field);
+		}
+	}
+
+
+	function customSorter(a, b, aRow, bRow, column, dir, sorterParams){
+		return aRow.extensions.group.rows.length - bRow.extensions.group.rows.length;
+	}
+
+	function samePhylo(obj) {
+		alert();
+	}
+
+	function customFilter(data, filterParams){
+		for(var i = 0; i < filterParams.cod.length; i++) {
+			if(filterParams.cod[i] != '?' && filterParams.cod[i] != data.cod[i])
+				return false;
+		}
+		return true;
+	}
+
+	function filterGenomes() {
+		var cod = "";
+		for(var i = 0; i < genomes.length; i++) {
+			cod = cod + ($("#ts-" + i).val()==-1?'?':$("#ts-" + i).val());
+		}
+		table.setFilter(customFilter, {cod:cod});
+	}
+
+	function groupTable(field) {
+		groupBy=field;
+		if(field == null)
+			table.setGroupBy('');
+		else {
+			table.setGroupBy(field);
+			table.setSort([{column:'sortGroupColumn', dir:'asc'}]);
+		}
+	}
+
+	function getClipboard() {
+		var url = "&fheaders=[";
+
+		var headers = table.getHeaderFilters();
+		for(var i = 0; i < headers.length; i++) {
+			url += '[\"' + headers[i].field + '\",\"' + headers[i].value + '\"],';
+		}
+		url += "]&fglobal=[";
+		var filters = table.getFilters();
+		for(var i = 0; i < filters.length; i++) {
+			url += '[\"' + filters[i].field + '\",\"' + filters[i].type + '\",\"' + filters[i].value + '\"],';
+		}
+		url += "]&sorters=[";
+		var sorters = table.getSorters();
+		for(var i = 0; i < sorters.length; i++) {
+			url += '[\"' + sorters[i].field + '\",\"' + sorters[i].dir + '\"],';
+		}
+		url += "]";
+		if(groupBy != null)
+			url += '&groupBy=' + groupBy;
+		
+	    copyToClipboard("table.htm?hv=" + (vertical==false?"h":"v") + "&col=[" + col + "]&set=" + dataset + "&all=" + datasetAll + "&gs=[" + requestGs + "]&cod=" + cod + (phylo!=null?"&phylo=" + phylo:"") + url);
+	}
+	
+	function downloadAbMatrix(showFunction, group) {
+		var download = '"Genes"';
+		if(showFunction)
+			download += ',"Function"';
+		if(group == null) {
+			for(var i = 0; i < genomes.length; i++) {
+				if(cod[i] != '*')
+					download += ',"' + genomes[i].name + '"';
+			}
+		}
+		else {
+			for(var i = 0; i < gs[group].childs.length; i++) {
+				download += ',"' + gs[group].childs[i].name + '"';
+			}
+			
+		}
+		download += '\n';
+
+		var rows = table.getRows(true);
+		rows.forEach(function(row){
+			if(showFunction)
+				download += '"' + row.getData().key + '","' + row.getData().func + '"';
+			else
+				download += '"' + row.getData().key + '"';
+			if (group == null) {
+				for(var i = 0; i < genomes.length; i++)
+					if(cod[i] != '*')
+						download += ',' + row.getData().cod[i];
+				download += '\n';
+			}
+			else {
+				var sum = [];
+				for(var i = 0; i < gs[group].childs.length; i++)
+					sum.push(0);
+				for(var i = 0; i < genomes.length; i++)
+					if(cod[i] != '*' && row.getData().cod[i] == '1')
+						sum[genomes[i].rg[group]] = 1;
+				for(var i = 0; i < gs[group].childs.length; i++)
+					download += ',' + sum[i];
+				download += '\n';
+			}
+		});
+		downloadFile("abMatrix.csv", download);
+	}
+
+	function downloadCharMatrix() {
+		var download = '';//'"Genes"';
+		var matrix = [];
+		for(var i = 0; i < genomes.length; i++)
+			matrix.push('');
+
+		var rows = table.getRows(true);
+		rows.forEach(function(row){
+			for(var i = 0; i < genomes.length; i++)
+				matrix[i] += row.getData().cod[i];
+		});
+		for(var i = 0; i < genomes.length; i++) 
+			if(cod[i] != '0' && cod[i] != '*')
+				download += '"' + genomes[i].name + '"\t' + matrix[i] + '\n';
+		downloadFile("charMatrix.txt", download);
+	}
+
+
+	function downloadDistanceMatrix(euclidean) {
+		matrix = [];
+		for(var i = 0; i < genomes.length; i++) {
+			var vet = [];
+			for(var j = 0; j < genomes.length; j++) {
+				vet.push(0);
+			}
+			matrix.push(vet);
+		}
+
+		var rows = table.getRows(true);
+		rows.forEach(function(row){
+			var vet = row.getData().cod.split('');
+			for(var i = 0; i < genomes.length; i++) {
+				for(var j = i+1; j < genomes.length; j++) {
+					if(vet[i] != vet[j])
+						matrix[i][j] += 1;
+				}
+			}
+		});
+
+		var download = '';
+		for(var i = 0; i < genomes.length; i++) {
+			if(cod[i] != '*')
+				download += ',"' + genomes[i].name + '"';
+		}
+		download += '\n'; 
+		
+		for(var i = 0; i < genomes.length; i++) {
+			if(cod[i] != '*') {
+				download += '"' + genomes[i].name + '"';
+				for(var j = 0; j < genomes.length; j++) {
+					if(cod[j] != '*' ) {
+						if(euclidean)
+							download += ',' + Math.sqrt(matrix[i][j] + matrix[j][i]);
+						else
+							download += ',' + (matrix[i][j] + matrix[j][i]);
+					}
+				}
+				download += '\n';
+			}
+		}
+		downloadFile("distMatrix.csv", download);
+	}
+
+	function roaryOutputs() {
+		var result = {
+			numConservGene: "",
+			numPanGene: "",
+			numUniqueGene: "",
+			numNewGene: ""
+		};
+		numGenOuts = 0;
+		for(var i = 0; i < genomes.length; i++) {
+			if(cod[i] == '0')
+				numGenOuts++;
+		}
+		for(var rep = 0; rep < 10; rep++) {
+			for(var i = 1; i <= genomes.length-numGenOuts; i++) {
+				set = [];
+				for(var j = 0; j < genomes.length; j++) {
+					set.push(false);
+				}
+				var last = 0;
+				for(var j = 0; j < i; j++) {
+					var x = Math.floor(Math.random() * genomes.length);
+					if(set[x] == false && cod[x] != "0") {
+						set[x] = true;
+						last = x;
+					}
+					else
+						j--;
+				}
+				var localCod = "";
+				for(var j = 0; j < genomes.length; j++) {
+					localCod += (set[j]?"1":"?");
+				}
+				var rows = table.getRows(true);
+				var sumNumConservGene = 0;
+				var sumNumPanGene = 0;
+				var sumNumUniqueGene = 0;
+				var sumNumNewGene = 0;
+				for(var j = 0; j < rows.length; j++) {
+					var okNumConservGene = true;
+					var okNumPanGene = false;
+					var okNumUniqueGene = 0;
+					for(var k = 0; k < genomes.length; k++) {
+						if(localCod[k] != "?" && localCod[k] != rows[j].row.data.cod[k])
+							okNumConservGene = false;
+						if(localCod[k] == rows[j].row.data.cod[k])
+							okNumPanGene = true;
+						if(localCod[k] == rows[j].row.data.cod[k])
+							okNumUniqueGene++;
+					}
+					if(okNumConservGene)
+						sumNumConservGene++;
+					if(okNumPanGene)
+						sumNumPanGene++;
+					if(okNumUniqueGene == 1){
+						sumNumUniqueGene++;
+						if(rows[j].row.data.cod[last] == "1")
+							sumNumNewGene++;
+					}
+				}
+				result.numConservGene += sumNumConservGene + "\t";
+				result.numPanGene += sumNumPanGene + "\t";
+				result.numUniqueGene += sumNumUniqueGene + "\t";
+				result.numNewGene += sumNumNewGene + "\t";
+			}
+			result.numConservGene += "\n";
+			result.numPanGene += "\n";
+			result.numUniqueGene += "\n";
+			result.numNewGene += "\n";
+		}
+		result.numConservGene = result.numConservGene.replace(/\t\n/g, '\n');
+		result.numPanGene = result.numPanGene.replace(/\t\n/g, '\n');
+		result.numUniqueGene = result.numUniqueGene.replace(/\t\n/g, '\n');
+		result.numNewGene = result.numNewGene.replace(/\t\n/g, '\n');
+		return result;
+	}
+
+	function arrayAvg(array) {
+		var sum = 0;
+		for(var i = 0; i < array.length; i++)
+			sum += array[i];
+		return sum/array.length;
+	}
+
+	function roaryAbGenes() {
+		var result = '"Gene","Non-unique Gene name","Annotation","No. isolates","No. sequences","Avg sequences per isolate","Genome Fragment","Order within Fragment","Accessory Fragment","Accessory Order with Fragment","QC","Min group size nuc","Max group size nuc","Avg group size nuc"';
+		for(var i = 0; i < genomes.length; i++)
+			result += ',"' + genomes[i].abbrev + '"';
+		result += '\n';
+		var rows = table.getRows(true);
+		for(var i = 0; i < rows.length; i++) {
+			var data = rows[i].row.data;
+			result += '"' + data.key + '","","' + data.func + '","' + data.gens + '","' + data.seqs + '","' + (data.seqs/data.gens).toFixed(2) + '","1","1","1","1","","' + data.lens[0] + '","' + data.lens[data.lens.length-1] + '","' + arrayAvg(data.lens) + '"';
+			for(var j = 0; j < genomes.length; j++) {
+				result += ',"';
+				for(var k = 0; k < data.fam[j].length; k++) {
+					if(k > 0)
+						result += '\t';
+					result += data.fam[j][k];
+				}
+				result += '"';
+			}
+			result += '\n';
+		}
+		return result;
+	}
+
+	function downloadRoary() {
+		var result = roaryOutputs();
+		var zip = new JSZip();
+		zip.file("number_of_conserved_genes.Rtab", result.numConservGene);
+		zip.file("number_of_genes_in_pan_genome.Rtab", result.numPanGene);
+		zip.file("number_of_new_genes.Rtab", result.numUniqueGene);
+		zip.file("number_of_unique_genes.Rtab", result.numNewGene);
+		zip.file("gene_presence_absence.csv", roaryAbGenes());
+		zip.generateAsync({type:"blob"}).then(
+			function (blob) {
+				saveAs(blob, "roary_output.zip");
+			}, 
+			function (err) {
+			}
+		);
+	}
+</script>
+
+</html>

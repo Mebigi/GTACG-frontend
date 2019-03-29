@@ -1,0 +1,46 @@
+.jqstooltip {
+    width: 70px;
+    height: 35px;
+}
+
+.jqsfield {
+    font: bold 10px arial san serif !important;
+    text-align: center !important;
+}
+
+#pageHeader {
+    margin-bottom:0px;
+}
+
+body {
+    height:100%;
+}
+
+#example-table {
+    height:calc(100vh - 80px);
+}
+
+#menuAlt {
+    display: none !important;
+}
+
+@media all and (max-width: 900px) {
+    .item > div.text, ui.dropdown.item > div.text {
+        display:none !important;
+    }
+}
+@media all and (max-width: 520px) {
+    #menuSidebarGenemes, #menuSidebarColumns {
+        display:none;
+    }
+    #menuAlt {
+        display: flex !important;
+    }
+    #example-table {
+        height:calc(100vh - 120px);
+    }
+}
+
+.dropdown.icon {
+    padding-top: 0px !important;
+}

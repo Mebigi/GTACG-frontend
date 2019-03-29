@@ -1,0 +1,979 @@
+<style>
+	.rowModuleGenome {
+		border-bottom: 1px solid #333;
+		background: white;
+		height: 200px;
+	}
+	.divModuleGenome {
+		/*margin: 10px;*/
+		position: relative;
+		width: calc(100vw - 50px);
+		height: 150px;
+	}
+	.headerModuleGenome {
+		position: relative;
+		width: calc(100vw - 50px);
+	}
+	.igv-content-header {
+		display: none;
+	}
+</style>
+
+
+
+	<div id="divTab" class="section ui raised segments">
+		<div class="sectionHeaderIcon ui top segment">
+			<i style="grid-area:icon;" id="tabSidebarIcon" class="sidebar icon"></i>
+			<h1 style="grid-area:label;" class="ui header">Sequences</h1>
+
+			<div style="grid-area:obj;">
+				<i style="display:inline-block;" id="tabColumnsIcon" class="columns icon"></i>
+				<div id="popupColumnsTab" class="ui custom center popup transition hidden">
+					<div style="color: black !important" class="ui horizontal divider">Divide Screen</div>
+					<!--button id="popupColumnsTab" class="ui fluid primary button" onclick="divideScreen('tab','tab')">Sequences</button-->
+					<button class="ui fluid primary button" onclick="divideScreen('tab','phylo')">Phylogeny</button>
+					<button class="ui fluid primary button" onclick="divideScreen('tab','align')">Alignment</button>
+					<button class="ui fluid primary button" onclick="divideScreen('tab','graph')">Graph</button>
+					<div class="ui divider"></div>
+					<button class="ui fluid primary button" onclick="divideScreen('tab','clear')">Clear</button>
+				</div>
+			</div>
+			
+		</div>
+
+		<div id="tabSegment" class="sectionData ui attached segment" style="overflow:hidden;width:calc(100vw - 70px);">
+			<div id="tabSidebar" class="ui inverted labeled icon left inline vertical demo sidebar menu">
+				<div class="ui horizontal divider">Options <i id="thumbtack" class="icon thumbtack"></i></div>
+				<div class="line">
+					<span>Show not present genomes</span>
+					<div id="showNotPresentGenomes" class="ui inverted slider checkbox obj">
+						<input type="checkbox"></input>
+						<label></label>
+					</div>
+				</div>
+				<div class="line">
+					<span>Group by</span>
+					<div id="tabSeqsGroupBy" class="ui fluid selection dropdown obj clearable">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">None</div>
+						<div class="menu">
+							<div class='item' data-value='data.org'>Genome</div>
+							<div class='item' data-value='data.len'>Length</div>
+							<div class='item' data-value='data.coef'>Clustering Coeff.</div>
+							<div class='item' data-value='data.func'>Function</div>
+							<script>
+								if(gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for(var i = 0; i < gs.length; i++)
+										document.write("<div class=\"sub item\" data-value=\"data.rg" + i + ".name\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+				<button id="selectAll" class="ui fluid primary button">Select All Visible Sequences</button>
+				<button id="deselectAll" class="ui fluid primary button">Deselect All Sequences</button>
+
+			</div>
+			<div id="pusher" class="sectionData pusher">
+				<div id="divDomains"></div>
+				<div id="divOrthologs"></div>
+				<div id="tabSeqs"></div>
+			</div>
+		</div>
+
+
+		<div class="sectionFooter ui two bottom attached buttons">
+			<div id="linkFasta" class="ui primary button"><i class="download icon"></i><div class="text">Download</div> Default Fasta</div>
+			<div id="linkCustomFasta" class="ui button"><i class="download icon"></i><div class="text">Download</div> Custom Fasta</div>
+			<div id="popupFasta" class="ui custom center popup transition hidden">
+				<div class="ui horizontal divider">Sequence Identifier</div>
+				<div id="popupIdFasta" class="ui fluid selection dropdown">
+					<input name="gender" value="key" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="text">Gene Key</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="org">Genome Abbreviation</div>
+					</div>
+				</div><br>
+
+				<div class="ui horizontal divider">Fields</div>
+				<div id="popupField1Fasta" class="ui fluid selection dropdown clearable">
+					<input name="gender" value="" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Field</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="genome">Genome Abbreviation</div>
+						<div class="item" data-value="func">Function</div>
+						<div class="item" data-value="len">Lenght</div>
+						<script>
+							if(gs.length > 0) {
+								document.write("<div class=\"divider\"></div>");
+								document.write("	<div class=\"header\">");
+								document.write("	<i class=\"folder icon\"></i> Groups");
+								document.write("</div>");
+								for(var i = 0; i < gs.length; i++)
+									document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+							}
+						</script>
+					</div>
+				</div>
+				<div id="popupField2Fasta" class="ui fluid search selection dropdown clearable">
+					<input name="gender" value="" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Field</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="genome">Genome Abbreviation</div>
+						<div class="item" data-value="func">Function</div>
+						<div class="item" data-value="len">Lenght</div>
+						<script>
+							if(gs.length > 0) {
+								document.write("<div class=\"divider\"></div>");
+								document.write("	<div class=\"header\">");
+								document.write("	<i class=\"folder icon\"></i> Groups");
+								document.write("</div>");
+								for(var i = 0; i < gs.length; i++)
+									document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+							}
+						</script>
+					</div>
+				</div>
+
+				<div id="popupField3Fasta" class="ui fluid search selection dropdown clearable">
+					<input name="gender" value="" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Field</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="genome">Genome Abbreviation</div>
+						<div class="item" data-value="func">Function</div>
+						<div class="item" data-value="len">Lenght</div>
+						<script>
+							if(gs.length > 0) {
+								document.write("<div class=\"divider\"></div>");
+								document.write("	<div class=\"header\">");
+								document.write("	<i class=\"folder icon\"></i> Groups");
+								document.write("</div>");
+								for(var i = 0; i < gs.length; i++)
+									document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+							}
+						</script>
+
+					</div>
+				</div><br><br>
+				<div id="linkCustomFastaDownload" class="ui fluid primary button">Download</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="divPhylo" class="section ui raised segments">
+		<div class="sectionHeaderIcon ui top attached segment">
+			<i style="grid-area:icon;" id="treeSidebarIcon" class="sidebar icon"></i>
+			<h1 style="grid-area:label;" class="ui header">Phylogeny</h1>
+			<div style="grid-area:obj;">
+				<div style="display:inline-block;margin-right:5px;" class="text">Zoom:</div>
+				<div style="display:inline-block;max-width:150px;width:150px;" id="treeZoom" class="ui slider"></div>
+				<i style="display:inline-block;" id="treeRedoIcon" class="redo icon"></i>
+				<i style="display:inline-block;" id="treeColumnsIcon" class="columns icon"></i>
+				<div id="popupColumnsPhylo" class="ui custom center popup transition hidden">
+					<div style="color: black !important" class="ui horizontal divider">Divide Screen</div>
+					<button class="ui fluid primary button" onclick="divideScreen('phylo','tab')">Sequences</button>
+					<!--button class="ui fluid primary button" onclick="divideScreen('phylo','phylo')">Phylogeny</button-->
+					<button class="ui fluid primary button" onclick="divideScreen('phylo','align')">Alignment</button>
+					<button class="ui fluid primary button" onclick="divideScreen('phylo','graph')">Graph</button>
+					<div class="ui divider"></div>
+					<button class="ui fluid primary button" onclick="divideScreen('phylo','clear')">Clear</button>
+				</div>
+			</div>
+		</div>
+		<div id="treeSegment" class="sectionData ui attached segment" style="overflow:hidden;">
+			<div id="phyloDimmerLoader" class="ui dimmer">
+				<div class="ui loader"></div>
+			</div>
+			<div id="treeSidebar" class="ui inverted labeled icon left inline vertical demo sidebar menu">
+				<div class="ui horizontal divider">Layout Settings <i id="thumbtack" class="icon thumbtack"></i></div>
+				<div class="line">
+					<span>Layout</span>
+					<div id="phyloLayout" class="ui fluid selection dropdown obj">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text"></div>
+						<div class="menu">
+							<div class='item' data-value="rectangular">Rectangular</div>
+							<div class='item' data-value="radial">Radial</div>
+							<div class='item' data-value="circular">Circular</div>
+							<div class='item' data-value="diagonal">Diagonal</div>
+							<div class='item' data-value="hierarchical">Hierarchical</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="line">
+					<span>Align right</span>
+					<div id="treeRightLabel" class="ui inverted slider checkbox obj">
+						<input type="checkbox"></input>
+						<label></label>
+					</div>
+				</div>
+				<div class="line">
+					<span>Show keys in label</span>
+					<div id="treeLabels" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+				<div class="line">
+					<span>Show branch length</span>
+					<div id="treeBranchLenght" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+				<div class="line">
+					<span>Vertical distance</span>
+					<div class="obj">
+						<i class="inverted plus square icon"></i>
+						<i class="inverted minus square icon"></i>
+					</div>
+				</div>
+				<div class="line">
+					<span>Font Size</span>
+					<div id="treeSliderFont" class="ui fluid inverted slider obj full"></div>
+				</div>
+				<div class="line">
+					<span>Force branch scale</span>
+					<div class="ui input obj full">
+						<input id="treeBranchScale" style="width: 100%;" placeholder="Number" type="text"/>
+					</div>
+				</div>
+				<div class="line">
+					<span>Force zoom scale</span>
+					<div class="ui input obj full">
+						<input id="treeZoomScale" style="width: 100%;" placeholder="Number" type="text"/>
+					</div>
+				</div>
+				<div class="line">
+					<span>Branch Length</span>
+					<div id="treeSliderBranchLength" class="ui inverted slider full obj"></div>
+				</div>
+				<div class="line">
+					<span>Branch Width</span>
+					<div id="treeSliderBranchWidth" class="ui inverted slider full obj"></div>
+				</div>
+				<div class="line">
+					<span>Node size</span>
+					<div id="treeSliderNodeSize" class="ui inverted slider full obj"></div>
+				</div>
+
+				<div class="ui horizontal divider">Group Settings</div>
+				<div class="line">
+					<span>Node colored by</span>
+					<div id="treeNodeGroup" class="ui fluid search selection dropdown obj clearable">
+						<input  type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">None</div>
+						<div class="menu">
+							<div class='item' data-value="mast">Mast</div>
+							<div class='item' data-value="eMast">eMast</div>
+							<script>
+								if(gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("	<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for(var i = 0; i < gs.length; i++)
+										document.write("<div class='sub item' data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+				<div class="line">
+					<span>Edge colored by</span>
+					<div id="treeEdgeGroup" class="ui fluid search selection dropdown obj clearable">
+						<input  type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">None</div>
+						<div class="menu">
+							<div class='item' data-value="mast">Mast</div>
+							<div class='item' data-value="eMast">eMast</div>
+							<script>
+								if(gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("	<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for(var i = 0; i < gs.length; i++)
+										document.write("<div class='sub item' data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+				<div class="line">
+					<span>Node name using</span>
+					<div id="treeNodeName" class="ui fluid search selection dropdown obj clearable">
+						<input  type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">None</div>
+						<div class="menu">
+							<div class='item' data-value="org">Genome</div>
+							<div class='item' data-value="mast">Mast</div>
+							<div class='item' data-value="eMast">eMast</div>
+							<script>
+								if(gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("	<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for(var i = 0; i < gs.length; i++)
+										document.write("<div class='sub item' data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+				<div class="line">
+					<span>Show Metadata</span>
+					<select id="treeMetadata" class="ui fluid dropdown obj" multiple="">
+						<script>
+							for(var i = 0; i < gs.length; i++)
+								document.write("<option value=\"" + i + "\">" + gs[i].name + "</option>");
+						</script>
+					</select>
+				</div>
+				<div class="line">
+					<span>Show Metadata text</span>
+					<div id="treeMetadataText" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+			</div>
+			<div id="pusher" class="sectionData pusher">
+				<div style="height:calc(100vh - 107px);width: calc(100vw - 36px) !important;" id="phylogram"></div>
+			</div>
+		</div>
+		<div class="sectionFooter ui bottom attached buttons">
+			<button id="downloadTree" class="ui primary button"><i class="download icon"></i><div class="text">Download</div> SVG</button>
+			<button id="downloadNewick" class="ui button" id="phyloDownNewick"><i class="download icon"></i><div class="text">Download</div> Newick</button>
+		</div>
+	</div>
+
+	<div id="divAlign" class="section ui raised segments">
+		<div class="sectionHeaderIcon ui top attached segment">
+			<i style="grid-area:icon;" id="alignSidebarIcon" class="sidebar icon"></i>
+			<h1 style="grid-area:label;" class="ui header">Alignment</h1>
+			<div style="grid-area:obj;">
+				<div style="display:inline-block;margin-right:5px;font-weight:bold;color:white;" class="text">Zoom:</div>
+				<div style="display:inline-block;max-width:150px;width:150px;" id="sliderAlignZoom" class="ui slider"></div>
+				<i style="display:inline-block;" id="alignRedoIcon" class="redo icon"></i>
+				<i style="display:inline-block;" id="alignColumnsIcon" class="columns icon"></i>
+				<div id="popupColumnsAlign" class="ui custom center popup transition hidden">
+					<div style="color: black !important" class="ui horizontal divider">Divide Screen</div>
+					<button class="ui fluid primary button" onclick="divideScreen('align','tab')">Sequences</button>
+					<button class="ui fluid primary button" onclick="divideScreen('align','phylo')">Phylogeny</button>
+					<!--button class="ui fluid primary button" onclick="divideScreen('align','align')">Alignment</button-->
+					<button class="ui fluid primary button" onclick="divideScreen('align','graph')">Graph</button>
+					<div class="ui divider"></div>
+					<button class="ui fluid primary button" onclick="divideScreen('align','clear')">Clear</button>
+				</div>
+			</div>
+		</div>
+		<div id="alignSegment" class="sectionData ui attached segment">
+			<div id="alignDimmerLoader" class="ui dimmer">
+				<div class="ui loader"></div>
+			</div>
+			<div id="alignSidebar" class="ui inverted labeled icon left inline vertical demo sidebar menu">
+				<div class="ui horizontal divider">Alignment Settings <i id="thumbtack" class="icon thumbtack"></i></div>
+				<div class="line">
+					<span>Sort by</span>
+					<div id="alignSorter" class="ui fluid search selection dropdown obj clearable">
+						<input type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">Nothing</div>
+						<div class="menu">
+							<div class='item' data-value="id">Identifier</div>
+							<div class='item' data-value="name">Label</div>
+							<div class='item' data-value="seq">Sequence</div>
+							<div class='item' data-value="selected">Selected</div>
+							<div class='item' data-value="tab">as Table</div>
+							<div class='item' data-value="phylo">as Phylogeny</div>
+							<script>
+								if (gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("	<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for (var i = 0; i < gs.length; i++)
+										document.write("<div class='sub item' data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+				<div class="line">
+					<span></span>
+					<div class="obj"><i id="alignIconOrder" class="icon inverted sort alphabet down"></i></div>
+				</div>
+				<div class="line">
+					<span>Show Id</span>
+					<div id="alignShowId" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+				<div class="line">
+					<span>Show label</span>
+					<div id="alignShowLabel" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+				<div class="line">
+					<span>Show group type</span>
+					<div id='alignShowData' class="ui fluid selection dropdown obj clearable">
+						<input  type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">Group type</div>
+						<div class="menu">
+							<script>
+								if(gs.length > 0) {
+									document.write("	<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for(var i = 0; i < gs.length; i++)
+										document.write("<div class='sub item' data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+				<div class="line">
+					<span>Show Markers</span>
+					<div id="alignShowMarkers" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+				<div class="line">
+					<span>Show Sequence Logo</span>
+					<div id="alignShowSeqlogo" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div class="line">
+				<div class="line">
+					<span>Show Conserved Bars</span>
+					<div id="alignShowConserv" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+			</div>
+			<div id="pusher" class="sectionData pusher">
+				<div style="margin-left:10px;height:calc(100vh - 107px);" id='snippetDiv'></div>
+			</div>
+		</div>
+		<div class="sectionFooter ui two bottom attached buttons">
+			<div id="linkFasta" class="ui primary button"><i class="download icon"></i><div class="text">Download</div> Default Fasta</div>
+			<div id="linkCustomAlign" class="ui button"><i class="download icon"></i><div class="text">Download</div> Custom Fasta</div>
+			<div id="popupAlign" class="ui custom center popup transition hidden">
+				<div class="ui horizontal divider">Sequence Identifier</div>
+				<div id="popupIdFasta" class="ui fluid selection dropdown">
+					<input name="gender" value="key" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="text">Gene Key</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="org">Genome Abbreviation</div>
+					</div>
+				</div><br>
+
+				<div class="ui horizontal divider">Fields</div>
+				<div id="popupField1Fasta" class="ui fluid search selection dropdown clearable">
+					<input name="gender" value="" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Field</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="genome">Genome Abbreviation</div>
+						<div class="item" data-value="func">Function</div>
+						<div class="item" data-value="len">Lenght</div>
+						<script>
+							if(gs.length > 0) {
+								document.write("<div class=\"divider\"></div>");
+								document.write("	<div class=\"header\">");
+								document.write("	<i class=\"folder icon\"></i> Groups");
+								document.write("</div>");
+								for(var i = 0; i < gs.length; i++)
+									document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+							}
+						</script>
+					</div>
+				</div>
+				<div id="popupField2Fasta" class="ui fluid search selection dropdown clearable">
+					<input name="gender" value="" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Field</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="genome">Genome Abbreviation</div>
+						<div class="item" data-value="func">Function</div>
+						<div class="item" data-value="len">Lenght</div>
+						<script>
+							if(gs.length > 0) {
+								document.write("<div class=\"divider\"></div>");
+								document.write("	<div class=\"header\">");
+								document.write("	<i class=\"folder icon\"></i> Groups");
+								document.write("</div>");
+								for(var i = 0; i < gs.length; i++)
+									document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+							}
+						</script>
+					</div>
+				</div>
+
+				<div id="popupField3Fasta" class="ui fluid search selection dropdown clearable">
+					<input name="gender" value="" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Field</div>
+					<div class="menu">
+						<div class="item" data-value="key">Gene Key</div>
+						<div class="item" data-value="genome">Genome Abbreviation</div>
+						<div class="item" data-value="func">Function</div>
+						<div class="item" data-value="len">Lenght</div>
+						<script>
+							if(gs.length > 0) {
+								document.write("<div class=\"divider\"></div>");
+								document.write("	<div class=\"header\">");
+								document.write("	<i class=\"folder icon\"></i> Groups");
+								document.write("</div>");
+								for(var i = 0; i < gs.length; i++)
+									document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+							}
+						</script>
+
+					</div>
+				</div><br><br>
+				<div id="linkCustomFastaDownload" class="ui fluid primary button">Download</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="divGraph" class="section fullscreen ui raised segments">
+		<div class="sectionHeaderIcon ui top attached segment">
+			<i style="grid-area:icon;" id="graphSidebarIcon" class="sidebar icon"></i>
+			<h1 style="grid-area:label;" class="ui header">Graph</h1>
+			<div style="grid-area:obj;" >
+				<div style="display:inline-block;margin-right:5px;font-weight:bold;color:white;" class="text">Zoom:</div>
+				<div style="display:inline-block;max-width:150px;width:150px;" id="graphSliderZoom" class="ui slider"></div>
+				<i style="display:inline-block;" id="graphColumnsIcon" class="columns icon"></i>
+				<div id="popupColumnsGraph" class="ui custom center popup transition hidden">
+					<div style="color: black !important" class="ui horizontal divider">Divide Screen</div>
+					<button class="ui fluid primary button" onclick="divideScreen('graph','tab')">Sequences</button>
+					<button class="ui fluid primary button" onclick="divideScreen('graph','phylo')">Phylogeny</button>
+					<button class="ui fluid primary button" onclick="divideScreen('graph','align')">Alignment</button>
+					<!--button class="ui fluid primary button" onclick="divideScreen('graph','graph')">Graph</button-->
+					<div class="ui divider"></div>
+					<button class="ui fluid primary button" onclick="divideScreen('graph','clear')">Clear</button>1
+				</div>
+			</div>
+		</div>
+		<div id="graphSegment" class="sectionData ui attached segment">
+			<div id="graphSidebar" class="ui inverted labeled icon left inline vertical demo sidebar menu">
+				<div class="ui horizontal divider">Graph Informations <i id="thumbtack" class="icon thumbtack"></i></div>
+				<div class="line">
+					<span>Number of Nodes</span>
+					<span class="obj" id="graphNumNodes"></span>
+				</div>
+				<div class="line">
+					<span>Number of Edges</span>
+					<span class="obj" id="graphNumEdges"></span>
+				</div>
+				<div class="line">
+					<span>Clustering Coefficient</span>
+					<span id="graphCoeff"></span>
+				</div>
+				<div class="ui horizontal divider">Graph Settings</div>
+				<div class="line">
+					<span>Show small nodes</span>
+					<div id="showSmallGraphNodes" class="ui inverted slider checkbox obj">
+						<input type="checkbox"></input>
+						<label></label>
+					</div>
+				</div>
+				<div class='line'>
+					<span>Stop nodes moviment</span>
+					<div id="graphLayout" class="ui inverted slider checkbox obj">
+						<input type="checkbox">
+						<label></label>
+					</div>
+				</div>
+				<div class='line'>
+					<span>Force between nodes</span>
+					<div id="graphSliderForce" class="ui fluid inverted slider obj full"></div>
+				</div>
+				<div class="line">
+					<span>Set nodes' labes</span>
+					<div id="graphLabels" class="ui fluid selection dropdown obj">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">Key</div>
+						<div class="menu">
+							<div class='item' data-value='key'>Key</div>
+							<div class='item' data-value='org'>Org. Name</div>
+						</div>
+					</div>
+				</div>
+				<div class='line'>
+					<span>Set nodes' color</span>
+					<div id="graphColors" class="ui fluid selection dropdown obj clearable">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">Nodes' color</div>
+						<div class="menu">
+							<div class="text"><b>Groups</b></div>
+							<script>
+								if(gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("	<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for(var i = 0; i < gs.length; i++)
+										document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+				<div class='line'>
+					<span>Set edges' label</span>
+					<div id="graphEdgesLabel" class="ui fluid selection dropdown obj">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">Edges' label</div>
+						<div class="menu">
+							<div class='item' data-value='e-value'>E-Value</div>
+							<div class='item' data-value='identity'>Identity</div>
+							<div class='item' data-value='length'>Length</div>
+							<div class='item' data-value='mismatch'>Mismatch</div>
+							<div class='item' data-value='gap'>Gap Opening</div>
+							<div class='item' data-value='bitscore'>Bitscore</div>
+						</div>
+					</div>
+				</div>
+				<div class='line'>
+					<span>Set edges' color</span>
+					<div id="graphEdgesColor" class="ui fluid selection dropdown obj clearable">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">Edges' color</div>
+						<div class="menu">
+							<div class='item' data-value='rand'>Random</div>
+							<div class='item' data-value='cond'>Condition</div>
+							<div class="text"><b>Groups</b></div>
+							<script>
+								if(gs.length > 0) {
+									document.write("<div class=\"divider\"></div>");
+									document.write("	<div class=\"header\">");
+									document.write("	<i class=\"folder icon\"></i> Groups");
+									document.write("</div>");
+									for(var i = 0; i < gs.length; i++)
+										document.write("<div class=\"sub item\" data-value=\"rg" + i + "\">" + gs[i].name + "</div>");
+								}
+							</script>
+						</div>
+					</div>
+				</div>
+
+				<div id='graphEdgesCond'>
+					<div id="graphEdgesCondA" class="ui fluid selection dropdown">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">E-Value</div>
+						<div class="menu">
+							<div class='item' data-value='e-value'>E-Value</div>
+							<div class='item' data-value='identity'>Identity</div>
+							<div class='item' data-value='length'>Length</div>
+							<div class='item' data-value='mismatch'>Mismatch</div>
+							<div class='item' data-value='gap'>Gap Opening</div>
+							<div class='item' data-value='bitscore'>Bitscore</div>
+						</div>
+					</div>
+					<div id="graphEdgesCondB" class="ui fluid selection dropdown">
+						<input name="gender" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">&gt;</div>
+						<div class="menu">
+							<div class='item' data-value=">">&gt;</div>
+							<div class='item' data-value=">=">&ge;</div>
+							<div class='item' data-value="<">&lt;</div>
+							<div class='item' data-value="<=">&le;</div>
+							<div class='item' data-value="=">=</div>
+							<div class='item' data-value="!=">&ne;</div>
+						</div>
+					</div>
+					<div class="ui input" id="graphEdgesCondCdiv">
+						<input id="graphEdgesCondC" placeholder="Number" type="text"/>
+						<div id="graphEdgesCondClabel" class="floating ui red label">0</div>
+					</div>
+				</div>
+				
+				<div class="ui horizontal divider">Node Information</div>
+				<div id='nodeInfo'>
+					<div class='line'>
+						<span>Node A</span>
+						<div id="graphNodeA" class="ui search selection dropdown clearable">
+							<input name="gender" type="hidden">
+							<i class="dropdown icon"></i>
+							<div class="default text">None</div>
+							<div class="menu">
+								<div class='item' data-value="">None</div>
+							</div>
+						</div>
+					</div>
+					<div class='line'>
+						<span>Node B</span>
+						<div id="graphNodeB" class="ui search selection dropdown clearable">
+							<input name="gender" type="hidden">
+							<i class="dropdown icon"></i>
+							<div class="default text">None</div>
+							<div class="menu">
+								<div class='item' data-value="">None</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="graphTableNode" style="display:none;">
+					<table class="table-style-one">
+						<thead><tr>
+							<th></th>
+							<th>Node A</th>
+							<th>Node B</th>
+						</tr></thead>
+						<tr><td>Organism</td><td><span id="graphNodeAorg"/></td><td><span id="graphNodeBorg"/></td></tr>
+						<tr><td>Length</td><td><span id="graphNodeAlen"/></td><td><span id="graphNodeBlen"/></td></tr>
+						<script>
+							for(var i = 0; i < gs.length; i++)
+								document.write("	<tr><td style=\"min-width: 80px;width: 80px;max-width: 80px;overflow: hidden;word-wrap: break-word;\">" + gs[i].name + "</td><td style=\"min-width: 110px;width: 110px;max-width: 110px;overflow: hidden;word-wrap: break-word;\"><span id='graphNodeArg" + i + "'/></td><td style=\"min-width: 110px;width: 110px;max-width: 110px;overflow: hidden;word-wrap: break-word;\"><span id='graphNodeBrg" + i + "'/></td></tr>");
+						</script>
+					</table>
+					<div id="graphTableEdge" style="display:none;">
+						<div style="color:white;" class="ui horizontal divider">Edge Information</div>
+						<table class="table-style-one">
+							<col width="100">
+							<col width="200">
+							<thead><tr><th></th><th>Value</th></tr></thead>
+							<tr><td>Identity</td><td><span id="graphEdgeIdentity"/></td></tr>
+							<tr><td>E-value</td><td><span id="graphEdgeEValue"/></td></tr>
+							<tr><td>Length</td><td><span id="graphEdgeLength"/></td></tr>
+							<tr><td>Mismatch</td><td><span id="graphEdgeMismatch"/></td></tr>
+							<tr><td>Gap Opening</td><td><span id="graphEdgeGap"/></td></tr>
+							<tr><td>Bitscore</td><td><span id="graphEdgeBitscore"/></td></tr>
+						</table>
+					</div>
+				</div>
+
+			</div>
+			<div class="sectionData pusher">
+				<div id='graphContainer' style="height:100%;overflow: hidden;"></div>
+			</div>
+		</div>
+		<div id="exportGraph" class="sectionFooter ui primary bottom attached button"><i class="download icon"></i><div class="text">Download</div> Tiff Image</div>
+	</div>
+
+	<div id="divRgs">
+		<script>
+			for(var i = 0; i < gs.length; i++) {
+				document.write("<div class='ui raised segments sectionAlt'>");
+				document.write("	<div class='sectionHeader ui top attached segment'>");
+				document.write("		<h1 style='grid-area:label;'>" + gs[i].name + "</h1>");
+				document.write("	</div>");
+				document.write("	<div id='tabRg" + i + "'></div>");
+				document.write("</div>");
+			}
+		</script>
+	</div>
+
+	<div style="visibility: hidden;display: none;">
+		<img id="hyphy-chart-image" />
+		<canvas id="hyphy-chart-canvas"></canvas>
+	</div>
+
+<script>
+	selectedRows = [];
+	function updateSelection(updatedRows, id) {
+		selectedRows = updatedRows;
+		if(id != 0) divTab.selectData(selectedRows);
+		if(id != 1) divPhylogeny.selectData(selectedRows);
+		if(id != 2) divAlign.selectData(selectedRows);
+		if(id != 3) divGraph.selectData(selectedRows);
+	}
+	
+	var url = new URL(window.location.href);
+	function load() {
+
+		scrollsnap();
+		if(typeof(serverUrl) == 'undefined' || typeof(makePort) == 'undefined') {
+			$('#treeRedoIcon').css('display','none');
+			$('#alignRedoIcon').css('display','none');
+		}
+
+		$('#graphColumnsIcon').popup({
+			on: 'click',
+			lastResort: 'right center',
+			closable: true,
+			exclusive: true,
+			delay: {
+				show: 300,
+				hide: 800
+			},
+		});
+
+		$('.ui.checkbox').checkbox();
+		$('.ui.dropdown').dropdown();
+		$('.ui.dropdown.clearable').dropdown({clearable: true});
+		$('.ui.dropdown.item').dropdown({action: 'hide'});
+		$('#tabSidebar').sidebar({transition: 'overlay',context: $('#tabSegment')}).sidebar('attach events', '#tabSidebarIcon');
+		
+		$('#alignSidebar').sidebar({transition: 'overlay',context: $('#alignSegment')}).sidebar('attach events', '#alignSidebarIcon');
+		$('#graphSidebar').sidebar({transition: 'overlay',context: $('#graphSegment')}).sidebar('attach events', '#graphSidebarIcon');
+
+		
+
+
+		fileName = url.searchParams.get("file");
+		$.getScript("data/families/" + fileName + ".js", function() {
+			var dataFields = getDataFields();
+			$('#graphCoeff').append(dataFields.coeff);
+
+			let numOrthologs = getNumOrthologs();
+			let numDomains = getNumDomains();
+
+			divTab = new TabSequences(document.getElementById("divTab"), sequenceList, indexSequenceList);
+			divTab.setDomains(getNumDomains());
+			divTab.setOrthologs(getNumOrthologs());
+			let nodes = getNodes();
+			divTab.setNodes(nodes);
+			
+			divAlign = new DivAlignment(document.getElementById("divAlign"), document.getElementById("alignModal"), nodes);
+
+			var dataRg = getDataRg();
+			divTab.makeTabulator(genomes);
+			for(var i = 0; i < gs.length; i++) {
+				var tabRg = new Tabulator("#tabRg" + i, {columns: columnsGs, layout:"fitDataFill",});
+				tabRg.setData(dataRg[i]);
+			}
+
+			let sTree = "";
+			if(typeof(getTree) !== "undefined")
+				sTree = getTree();
+			divPhylogeny = new DivPhylogeny(document.getElementById("divPhylo"), document.getElementById("phyloModal"), nodes, sTree);
+			if(typeof getMast !== "undefined")
+				divPhylogeny.setMast(getMast(), getEMast());
+
+			divGraph = new DivGraph(document.getElementById("divGraph"), nodes);
+			divGraph.setEdges(getEdges());
+			if(divTab.checkMaxNodes(maxNodes)) {
+				divPhylogeny.makeTree();
+				divGraph.makeGraph(gs);
+				divAlign.makeAlignment();
+			}
+			else {
+				if(typeof getEdges !== "undefined") {
+					edges = getEdges();
+				}
+
+				divPhylogeny.display("none");
+				divAlign.display("none");
+				divGraph.display("none");
+				$('#largeModal').modal({closable: false});
+				$('#largeModal').modal('show');
+			}
+			divTab.setUpdateSelection(updateSelection);
+			divAlign.setUpdateSelection(updateSelection);
+			divPhylogeny.setUpdateSelection(updateSelection);
+			divGraph.setUpdateSelection(updateSelection);
+		}, true);
+	}
+
+	function loadAllSections() {
+		divPhylogeny.makeTree();
+		divGraph.makeGraph(gs);
+		divAlign.makeAlignment();
+	}
+
+	function loadSections() {
+		if($('#modalPhylo').checkbox('is checked')) 
+			divPhylogeny.makeTree();
+			
+		if($('#modalAlign').checkbox('is checked')) 
+			divGraph.makeGraph(gs);
+		
+		if($('#modalGraph').checkbox('is checked')) 
+			divAlign.makeAlignment();
+	}
+
+	screenDivisions = [];
+	function getDivision(screenDivisions, value) {
+		for (let i = 0; i < screenDivisions.length; i++) {
+			if(screenDivisions[i][0] == value || screenDivisions[i][1] == value) {
+				return screenDivisions[i];
+			}
+		}
+		return null;
+	}
+	function divideScreen(first, second) {
+		let dividedAlign = getDivision(screenDivisions, "align") != null;
+
+		let newDivisions = [];
+		for (let i = 0; i < screenDivisions.length; i++) {
+			if(screenDivisions[i][0] != first && 
+				screenDivisions[i][1] != first && 
+				screenDivisions[i][0] != second && 
+				screenDivisions[i][1] != second) {
+				newDivisions.push(screenDivisions[i]);
+			}
+		}
+		if(second != "clear")
+			newDivisions.push([first, second]);
+		screenDivisions = newDivisions;
+		let screenOrder = ['tab', 'phylo', 'align', 'graph'];
+		let result = "'header header' ";
+		for (let i = 0; i < screenOrder.length; i++) {
+			division = getDivision(screenDivisions, screenOrder[i]);
+			if(division == null) {
+				result += "'" + screenOrder[i] + " " + screenOrder[i] + "' ";
+				$("#div" + screenOrder[i][0].toUpperCase() + screenOrder[i].substring(1))[0].style.setProperty("margin-right", "10px", "important");
+				$("#div" + screenOrder[i][0].toUpperCase() + screenOrder[i].substring(1))[0].style.setProperty("margin-left", "10px", "important");
+			}
+			else if (division[0] == screenOrder[i]) {
+				result += "'" + division[0] + " " + division[1] + "' ";
+				$("#div" + division[0][0].toUpperCase() + division[0].substring(1))[0].style.setProperty("margin-right","5px", "important");
+				$("#div" + division[0][0].toUpperCase() + division[0].substring(1))[0].style.setProperty("margin-left","10px", "important");
+				$("#div" + division[1][0].toUpperCase() + division[1].substring(1))[0].style.setProperty("margin-left","5px", "important");
+				$("#div" + division[1][0].toUpperCase() + division[1].substring(1))[0].style.setProperty("margin-right","10px", "important");
+			}
+		}
+		result += "'rgs rgs'";
+		$(".scrolling-sections").css("grid-template-areas", result);
+		$(".ui.popup").popup("hide all");
+		if(dividedAlign != (getDivision(screenDivisions, "align") != null)) {
+			loadAlign();
+			alignSelectData(selectedRows);
+		}
+	}
+
+</script>
+
+</html>
+

@@ -1,0 +1,366 @@
+<style>
+	.ui-controlgroup-vertical {
+		width: 150px;
+	}
+
+	.ui-controlgroup.ui-controlgroup-vertical>button.ui-button,
+	.ui-controlgroup.ui-controlgroup-vertical>.ui-controlgroup-label {
+		text-align: center;
+	}
+
+	#car-type-button {
+		width: 120px;
+	}
+
+	.ui-controlgroup-horizontal .ui-spinner-input {
+		width: 20px;
+	}
+
+	.ui.toggle.checkbox.inverted .box::before,
+	.ui.toggle.checkbox.inverted label::before {
+		background-color: #aaa !important;
+	}
+
+	p {
+		text-indent: 2em;
+		text-align: justify;
+	}
+
+	table.listItens {
+		margin-left: 4em;
+	}
+
+	#page {
+		display: grid;
+		grid-template-columns: 200px 1fr minmax(200px, 800px) 1fr;
+		grid-template-rows: 1fr 150px;
+		grid-template-areas: 'menu . content .' 'footer footer footer footer';
+	}
+
+	#menu {
+		grid-area: menu;
+	}
+
+	#content {
+		grid-area: content;
+	}
+
+	#footer {
+		grid-area: footer;
+	}
+
+	@media all and (max-width: 600px) {
+		#page {
+			display: grid;
+			grid-template-columns: 1fr;
+			grid-template-rows: auto 150px;
+			grid-template-areas: 'content' 'footer';
+		}
+		#menu {
+			display: none;
+		}
+	}
+</style>
+
+<div id="page">
+	<div id="menu">
+		<div class="ui accordion">
+			<div class="active title">
+				<i class="dropdown icon"></i>
+				Home
+			</div>
+			<div style="display: flex;flex-direction: column;padding-left: 20px;" class="active content">
+				<a href="#homeSettings">Settings</a>
+				<a href="#homeFilters">Filters</a>
+				<a href="#homeStatistics">Statistics</a>
+				<a href="#home2DPlot">2D Plot</a>
+				<a href="#homePhylogeny">Phylogeny</a>
+			</div>
+			<div class="title">
+				<i class="dropdown icon"></i>
+				What kinds of dogs are there?
+			</div>
+			<div class="content">
+				<p>There are many breeds of dogs. Each breed varies in size and temperament. Owners often select a breed of dog that they
+					find to be compatible with their own lifestyle and desires from a companion.</p>
+			</div>
+			<div class="title">
+				<i class="dropdown icon"></i>
+				How do you acquire a dog?
+			</div>
+			<div class="content">
+				<p>Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.</p>
+				<p>A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the
+					pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps
+					give a good home to a dog who may not find one so readily.</p>
+			</div>
+		</div>
+	</div>
+	<div id="content">
+		<p>O XXXXXX é um framework de genomica comparativa feito com o intuito de ser interativo (podendo manipular a visualização
+			dods dados) e confrontar subgrupos de genomas sob diferentes perspectivas.</p>
+
+		<h1 id="home" class="ui dividing header">Home page</h1>
+		<p>A home page deste framework é dividida em 5 principais áreas:</p>
+		<div class="ui bulleted list">
+			<div class="item">Settings</div>
+			<div class="item">Filters</div>
+			<div class="item">Statistics</div>
+			<div class="item">2D plot</div>
+			<div class="item">Phylogeny</div>
+		</div>
+
+		<h3 id="homeSettings" class="ui header">Settings</h3>
+		<p>Esta divisão diz respeito ao formato da vizualização das famílias por meio de uma tabela em que diversos valores estão pré-computados.</p>
+		<p>O campo <b>Orientation</b> define se as informações pré-computadas especificamente para os subgrupos de genomas serão exibidas em uma única linha (<b>Horizontal</b>), com colunas lado a lado, em uma multiplas linhas (<b>Vertical</b>), cada subgrupo correspondendo a uma linha. Caso selecionado o modo <b>Vertical</b> cada família de genes pode corresponder a diversas linhas, impactando algumas métricas.</p>
+
+		<p>O campo
+			<b>Dataset</b> define o nível para agrupamento das famílias. No primeiro nível de agrupamento esta a
+			<b>Homology</b>, o agrupamento é feito atraves de um algoritmo de grafo que busca maximizar o coeficiente de clusterização
+			das sequencias homologas
+			<b>(Santiago and Digiampietri, 2018)</b>. No segundo nível
+			<b>Orthology</b>, os grupos homologos são novamente divididos atravez de uma análise filogenética, de acordo com o método
+			descrito por
+			<b>
+				<a href="http://academic.oup.com/nar/article/46/1/e5/4564799">Ding et. al. (2018)</a>
+			</b>. O nível
+			<b>Domains</b> é também uma análise de grafos assim como a
+			<b>Homology</b>, com a excessão de não ser mutualmente exclusiva. Os grupos formados em
+			<b>Domains</b> podem ser tanto uma abordagem alternativa ao
+			<b>Orthology</b> quanto uma abordagem derivada desses grupos. Já a opção
+			<b>Exclusives</b> diz respeito às famílias que possuem genes vindos de um único genoma.</p>
+		<p>O campo
+			<b>Groups</b> contém todos os subgrupos de genomas que foram anteriormente definidos na fase de geração dos dados. Esse
+			campo permite multipla seleção, e ao selecionar uma opção são exibidas na tabela de detalhe métricas especificas para
+			cada tipo presente nos grupos.</p>
+		<p>Por fim, o campo
+			<b>Freeze</b> congela a visualização das colunas na tabela de detalhe.</p>
+		<p>Os botões
+			<b>See all families</b> e
+			<b>Find family</b> levam respectivamente para a tabela de detalhe das famílias e a tabela de busca de famílias por meio
+			dos genes e funções.</p>
+		<h3 id="homeFilters" class="ui header">Filters</h3>
+		<p>Nesta divisão é possivel filtrar dos dados presentes na tabela de detalhes das famílias com base a presença ou ausência
+			dos genomas nas famílias, individualmente pela opção
+			<b>Genomes</b>, ou de forma coletiva pela oção
+			<b>Groups</b>.</p>
+		<p>Na opção
+			<b>Genomes</b> existem 3 possiveis de filtros indiviuas sobre as famílias:</p>
+		<table class="listItens">
+			<tr>
+				<td>
+					<div class="ts ts-ko">
+						<i></i>
+					</div>
+				</td>
+				<td>
+					<p>
+						<b>Não filtrar</b> famílias por este genoma.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="ts ts-ok">
+						<i></i>
+					</div>
+				</td>
+				<td>
+					<p>Mostrar apenas as famílias que
+						<b>tenham</b> este genoma na composição.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="ts ts-both">
+						<i></i>
+					</div>
+				</td>
+				<td>
+					<p>Mostrar apenas as famílias que
+						<b>não tenham</b> este genoma na composição.</p>
+				</td>
+			</tr>
+		</table>
+		<p>O mesmo conceito foi empregado na opção
+			<b>Groups</b>, existem 4 possiveis opções para cada grupo que definem como cada família será filtrada:</p>
+		<table class="listItens">
+			<tr>
+				<td>
+					<b>Nothing</b>
+				</td>
+				<td>
+					<p><b>Não filtrar</b> famílias por este grupo.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Yes</b>
+				</td>
+				<td>
+					<p>Mostrar famílias que	<b>tenham ao menos um</b> genoma pertencente ao grupo na composição.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Yes(Core)</b>
+				</td>
+				<td>
+					<p>Mostrar famílias que	<b>tenham todos</b> os genomas pertencentes ao grupo na composição.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>No</b>
+				</td>
+				<td>
+					<p>Mostrar famílias que <b>não tenham nenhum</b> dos genomas pertencentes ao grupo na composição.</p>
+				</td>
+			</tr>
+		</table>
+		<p>O botão <b>See filtered families</b> leva até a tabela detalhada das famílias com dados de acordo com os filtros estabelecidos.</p>
+		
+		<h3 id="homeStatistics" class="ui header">Statistics</h3>
+		<p>Essa divisão exibe informações com 3 níveis de detalhes: <b>Family</b>, <b>Sequence</b> e <b>Alingment</b>.</p>
+		<p>No nível <b>Family</b>, e consequentemente das componentes conexas do grafo, são distribuidas informações sobre a composição de genomas e sequências dentro das famílias, isso é, <b>Clustering Coefficient</b>, <b>Number of Sequences</b>, <b>Number of Genomes</b>.</p>
+		<p>No nível <b>Sequence</b>, e consequentemente dos nós que do grafo, são exibidas informações tanto da topologia dos nós quanto da sequencia de aminoacidos, isto é, <b>Clustering  Coefficient</b>, <b>Number of Edges</b>, <b>Number of HSPs</b> e <b>Length</b>.</p>
+		<p>No nível <b>Alignment</b>, e consequentemente das arestas que compõem o grafo, apresentam informações com relação aos alinhamentos que não foram descartados na fase de cluseterização, isto é, <b>Max -log10(E-Value)</b>, <b>Max Identity (%)</b>, <b>Max Length Alignment (%)</b>, <b>Max Bit-score</b>, <b>Min Gap Opening</b> e <b>Min Mismatchs</b>.</p>
+		<p>O intervalo de informação que o gráfico pode exibir é determinado de forma fixa de entre 0 e 100, entretanto os valores podem ser alterados para uma quantidade qualquer preenchendo-se os campos <b>Minimum</b> e <b>Maximum</b>, assim como o invalo de acumulação dos dados pelo campo <b>Interval</b>. Os dados também podem ser exibido seguindo uma acumulação separada para cada intervalo dos dados ou total (acumulativa) quando selecionado o campo <b>Accumulated</b>.</p>
+
+		<h3 id="home2DPlot" class="ui header">2D Plot</h3>
+		<p>Essa divisão apresenta uma representação dibimensional dos genomas tendo em conta a distância entre os genomas. O algoritmo <b>Classical Multidimensional Scaling (MDS)</b> faz uma proximação de uma matriz de distância <i>N</i>x<i>N</i> para um plano bidimensional, em que a distância entre os pontos é a mais próxima possível dos dados da matriz original. A matriz de distância é obtida pela distância euclidiana considerando a presença ou ausência dos genomas nas famílias.</p>
+		<p>Além disso, os dados também podem ser baixados no formato de imagem PNG, preservando os marcadores de cada eixo do gráfico.</p>
+
+		<h3 id="homePhylogeny" class="ui header">Phylogeny</h3>
+		<p>Essa divisão é responsável por exibir dados referentes a filogenomica dos genomas analisados na forma a árvores filogenéticas. Existem diversos métodos de se produzir essas árvores, e é possivel escolher entre elas utilizando o campo de seleção no cabeçalho.</p>
+		<p>No cabeçalho existem mais 3 opções de interação:</p>
+		<table class="listItens">
+			<tr>
+				<td>
+					<i class="sidebar icon"></i>
+				</td>
+				<td>
+					<p>Abre mais interações de interatividade por meio de uma barra lateral.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Zoom</b>
+				</td>
+				<td>
+					<p>Aumenta e diminui o zoom da árvore filogenética.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<i class="arrow right icon"></i>
+				</td>
+				<td>
+					<p>Leva à página de detalhes das famílias exibindo apenas famílias com mesma filogenia.</p>
+				</td>
+			</tr>
+		</table>
+		Os campos presentes na barra lateral são:
+		<table class="listItens">
+			<tr>
+				<td>
+					<b>Layout</b>
+				</td>
+				<td>
+					<p>Determina a forma como a árvore filogenética será exebida (ver em <a href="#anexoFilogenia">anexo</a>).</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Align right</b>
+				</td>
+				<td>
+					<p>Alinha os rótulos das folhas dos organismos a direita. Caso não selecionado os rótulos aparecem ao lado da possição da folha.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Show keys in label</b>
+				</td>
+				<td>
+					<p>Exibe a chave de identificação do genoma ou da sequencia nos rótulos das folhas.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Show branch length</b>
+				</td>
+				<td>
+					<p>Exibe o comprimento dos ramos, quando existirem.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Vertical distance</b>
+				</td>
+				<td>
+					<p>Aumenta ou diminui a distância vertical entre os elementos da árvore.</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Vertical distance</b>
+				</td>
+				<td>
+					<p>Aumenta ou diminui a distância vertical entre os elementos da árvore.</p>
+				</td>
+			</tr>
+		</table>
+		
+		
+
+
+		<h1 id="home" class="ui dividing header">Anexos</h1>
+		<h3 id="anexoFilogenia" class="ui header">Modelos de apresentação de filogenia</h3>
+		<table class="listItens">
+			<tr>
+				<td>
+					<b>Rectangular</b>
+				</td>
+				<td>
+					<img style="max-width:400px;" src="help/treeRect.png">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Radial</b>
+				</td>
+				<td>
+					<img style="max-width:400px;" src="help/treeRadial.png">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Circular</b>
+				</td>
+				<td>
+					<img style="max-width:400px;" src="help/treeCircular.png">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Diagonal</b>
+				</td>
+				<td>
+					<img style="max-width:400px;" src="help/treeDiagonal.png">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Hierarchical</b>
+				</td>
+				<td>
+					<img style="max-width:400px;" src="help/treeHier.png">
+				</td>
+			</tr>
+		</table>
+
+
+	</div>
+	<div id="footer">
+	</div>
+</div>

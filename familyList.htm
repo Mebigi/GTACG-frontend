@@ -1,0 +1,44 @@
+<style>
+	@media all and (max-width: 550px) {
+		.item > div.text, ui.dropdown.item > div.text {
+			display:none !important;
+		}
+	}
+</style>
+
+<div id="dimmerLoader" class="ui dimmer">
+	<div class="ui loader"></div>
+</div>
+
+<div class="ui attached demo menu">
+	<div class="ui dropdown item">
+		<i class="download icon"></i><div class="text">Download</div>
+		<div class="menu">
+			<a id="download-csv" class="item">Download CSV</a>
+			<a id="download-json" class="item">Download jSON</a>
+			<a id="download-xlsx" class="item">Download XLSX</a>
+		</div>
+	</div>
+	<!--a id="clearFilters" class="item"><i class="trash icon"></i><div class="text">Clear filters</div></a-->
+	<a id="clearHeaderFilters" class="item"><i class="trash icon"></i><i class="heading icon"></i><div class="text">Clear header filters</div></a>
+	<div class="ui dropdown item">
+		<i class="list ul icon"></i><span class="text">Group by</span>
+		<div class="menu">
+			<a id="groupByClear"  class="item">Clear</a>
+			<div class="ui divider"></div>
+			<a id="groupByFunc"  class="item">Function</a>
+			<a id="groupByGen" class="item">Genome</a>
+		</div>
+	</div>
+	<div class="right menu">
+		<a class="item" id="saveSubPage"><i class="save icon"></i></a>
+		<a class="item" id="removePage"><i class="x icon"></i></a>
+	</div>
+</div>
+
+<div id="tableSegment" class="ui bottom attached">
+	<div class="pusher">
+		<div class="ui fluid" id="example-table"></div>
+	</div>
+</div>
+

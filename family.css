@@ -1,0 +1,141 @@
+div.text {
+    display:inline-block;
+}
+@media all and (max-width: 600px) {
+    div.text {
+        display:none !important;
+    }
+    #treeZoom {
+        width:75px !important;
+    }
+    #sliderAlignZoom {
+        width:75px !important;
+    }
+    #graphSliderZoom {
+        width:75px !important;
+    }
+}
+
+.field> .label {
+    color:black !important;
+}
+
+#modalAlign > label, #modalPhylo > label {
+    color:white;
+}
+
+#modalGraph > label {
+    color:red;
+}
+
+#selectAll, #deselectAll {
+    margin-top: 20px;
+    margin-bottom:20px;
+}
+
+#nodeInfo > div.line {
+    display:grid !important;
+	width:100%;
+	grid-template-columns: 1fr 2fr;
+    grid-template-areas: 'field obj';
+    justify-items: start;
+	align-items: center;
+}
+
+#nodeInfo > div.line > span {
+	color:white;
+	font-weight:bold;	
+	grid-area: field;
+	width: 100%;
+	text-align: left;
+}
+#nodeInfo > div.line > .obj {
+	grid-area: obj;
+}
+
+#graphEdgesCond {
+    display:grid;
+    grid-template-rows:auto;
+    grid-template-columns: 3fr 1fr 2fr;
+    grid-template-areas:'divA divB divC';
+}
+
+#graphEdgesCondA {
+    grid-area:divA;
+}
+
+#graphEdgesCondB {
+    grid-area:divB;
+}
+ 
+#graphEdgesCondCdiv {
+    grid-area:divC;
+}
+
+#graphEdgesCondC {
+    width: 100%;
+}
+
+#graphEdgesCondClabel {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    left: 85%;
+    top:-6px;
+}
+
+.scrolling-sections {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'header header' 'tab tab' 'genome genome' 'phylo phylo' 'align align' 'graph graph' 'rgs rgs';
+    width: 100%;
+}
+
+#pageHeader {
+    grid-area: header;
+    margin-bottom: 0px !important;
+}
+
+#divTab {
+    grid-area: tab;
+    margin-bottom: 0px !important;
+}
+
+#divGenome {
+    grid-area: genome;
+    margin-bottom: 0px !important;
+}
+
+#divPhylo {
+    grid-area: phylo;
+    margin-bottom: 0px !important;
+}
+
+#divAlign {
+    grid-area: align;
+    margin-bottom: 0px !important;
+}
+
+#divGraph {
+    grid-area: graph;
+    margin-bottom: 0px !important;
+}
+
+#divRgs {
+    grid-area: rgs;
+    margin-bottom: 10px;
+}
+
+.ui.attached.segment {
+    width: unset !important;
+    max-width: unset !important;
+}
+
+.columns.icon {
+    font-size: 1.3em;
+}
+@media all and (max-width: 600px) {
+    .columns.icon {
+        display: none !important;
+    }
+}

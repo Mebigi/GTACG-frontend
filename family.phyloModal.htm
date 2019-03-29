@@ -1,0 +1,235 @@
+<div id="phyloModal" class="ui fullscreen segment modal">
+    <div class="ui header">
+        <i class="redo icon"></i>
+        Phylogeny
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>Program</label>
+                <div id="programPhylo" class="ui selection dropdown">
+                    <input name="fieldProgramPhylo" type="hidden">
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Program</div>
+                    <div class="menu">
+                        <div class="item" data-value="modalFasttree">FastTree</div>
+                        <div class="item" data-value="modalPhyml">PhyML</div>
+                        <div class="item" data-value="modalRaxml">RAxML</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:none;" id="modalFasttree">
+                <div class="four fields">
+                    <div class="field">
+                        <div class="label">Searching</div>
+                        <div id="searchFasttree" class="ui selection dropdown clearable">
+                            <input name="searchingFasttree" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Default</div>
+                            <div class="menu">
+                                <div class="item" data-value="-fastest">Fastest</div>
+                                <div class="item" data-value="-slow">Slow</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Topology</div>
+                        <div id="topologyFasttree" class="ui selection dropdown clearable">
+                            <input name="fieldSearchingPhylo" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Default</div>
+                            <div class="menu">
+                                <div class="item" data-value="-nni">NNI</div>
+                                <div class="item" data-value="-spr">SPR</div>
+                                <div class="item" data-value="-noml">NOML</div>
+                                <div class="item" data-value="-sprlength">SPRLength</div>
+                                <div class="item" data-value="-mlnni">MlNNI</div>
+                                <div class="item" data-value="-mllen">MlLen</div>
+                                <div class="item" data-value="-mllen -none">MlLen None</div>
+                                <div class="item" data-value="-slownni">SlowNNI</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="label">ML Model</div>
+                        <div id="modelFasttree" class="ui selection dropdown clearable">
+                            <input name="fieldSearchingPhylo" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Default</div>
+                            <div class="menu">
+                                <div class="item" data-value="-lg">lg</div>
+                                <div class="item" data-value="-wag">wag</div>
+                                <div class="item" data-value="-gtr">gtr</div>
+                                <div class="item" data-value="-cat #">cat #</div>
+                                <div class="item" data-value="-nocat">nocat</div>
+                                <div class="item" data-value="-gamma">gamma</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Join</div>
+                        <div id="joinFasttree" class="ui selection dropdown clearable">
+                            <input name="fieldSearchingPhylo" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Default</div>
+                            <div class="menu">
+                                <div class="item" data-value="-nj">NJ</div>
+                                <div class="item" data-value="-bionj">BioNJ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:none;" id="modalPhyml">
+                <div class="ui segment">
+                    <div class="ui top left attached label">Parameters</div>
+                    <div class="four fields">
+                        <div class="field">
+                            <label>Model</label>
+                            <div id="modelPhyml" class="ui selection dropdown clearable">
+                                <input name="fieldProgramPhylo" type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Default</div>
+                                <div class="menu">
+                                    <div class="item" data-value="-m LG">LG (default)</div>
+                                    <div class="item" data-value="-m WAG">WAG</div>
+                                    <div class="item" data-value="-m JTT">JTT</div>
+                                    <div class="item" data-value="-m MtREV">MtREV</div>
+                                    <div class="item" data-value="-m Dayhoff">Dayhoff</div>
+                                    <div class="item" data-value="-m DCMut">DCMut</div>
+                                    <div class="item" data-value="-m RtREV">RtREV</div>
+                                    <div class="item" data-value="-m CpREV">CpREV</div>
+                                    <div class="item" data-value="-m VT">VT</div>
+                                    <div class="item" data-value="-m Blosum62">VT Blosum62</div>
+                                    <div class="item" data-value="-m MtMam">MtMam</div>
+                                    <div class="item" data-value="-m MtArt">MtArt</div>
+                                    <div class="item" data-value="-m HIVw">HIVw</div>
+                                    <div class="item" data-value="-m HIVb">HIVb</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Proportion of Invariable Sites</label>
+                            <input id="propInvarPhyml"></input>
+                        </div>
+                        <div class="field">
+                            <label>Number of Relative Substitution Rate Categories</label>
+                            <input id="subRatePhyml"></input>
+                        </div>
+                        <div class="field">
+                            <label>Gamma Shape Parameter</label>
+                            <input id="gammShapePhyml"></input>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="ui top left attached label">Tree Searching</div>
+                    <div class="four fields">
+                        <div class="field">
+                            <label>Improvement</label>
+                            <div id="improvementPhyml" class="ui selection dropdown clearable">
+                                <input name="fieldProgramPhylo" type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Default</div>
+                                <div class="menu">
+                                    <div class="item" data-value="-s NNI">NNI</div>
+                                    <div class="item" data-value="-s SPR">SPR</div>
+                                    <div class="item" data-value="-s BEST">Best</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Number of Ramdom Trees</label>
+                            <input id="randTreesPhyml"></input>
+                        </div>
+                        <div class="field">
+                            <label>Starting Trees</label>
+                            <input id="startTreesPhyml"></input>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="ui top left attached label">Branch Support</div>
+                    <div class="four fields">
+                        <div class="field">
+                            <label>Fast likelihood-based method</label>
+                            <div id="fastLBMethodPhyml" class="ui selection dropdown clearable">
+                                <input name="fieldProgramPhylo" type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Default</div>
+                                <div class="menu">
+                                    <div class="item" data-value="-s NNI">aLRT SH-like</div>
+                                    <div class="item" data-value="-s SPR">aLRT Chi2-based</div>
+                                    <div class="item" data-value="-s BEST">aBayes</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:none;" id="modalRaxml">
+                <div class="ui segment">
+                    <div class="ui top left attached label">Substitution Model</div>
+                    <div class="four fields">
+                        <div class="field">
+                            <label>Substitution Model</label>
+                            <div id="subModelRaxml" class="ui selection dropdown clearable">
+                                <input name="fieldProgramPhylo" type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Default</div>
+                                <div class="menu">
+                                    <div class="item" data-value="-m PROTCAT">PROTCAT</div>
+                                    <div class="item" data-value="-m PROTCATI">PROTCATI</div>
+                                    <div class="item" data-value="-m PROTGAMMA">PROTGAMMA</div>
+                                    <div class="item" data-value="-m PROTGAMMAI">PROTGAMMAI</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Matrix</label>
+                            <div id="matrixRaxml" class="ui selection dropdown clearable">
+                                <input name="fieldProgramPhylo" type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Default</div>
+                                <div class="menu">
+                                    <div class="item" data-value="DAYHOFF">DAYHOFF</div>
+                                    <div class="item" data-value="CDMUT">DCMUT</div>
+                                    <div class="item" data-value="JTT">JTT</div>
+                                    <div class="item" data-value="MTREV">MTREV</div>
+                                    <div class="item" data-value="WAG">WAG</div>
+                                    <div class="item" data-value="RTREV">RTREV</div>
+                                    <div class="item" data-value="CPREV">CPREV</div>
+                                    <div class="item" data-value="VT">VT</div>
+                                    <div class="item" data-value="BLOSUM62">BLOSUM62</div>
+                                    <div class="item" data-value="MTMAM">MTMAM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="four fields">
+                        <div class="ui top left attached label">Bootstrap</div>
+                        <div class="field">
+                            <label>Number of Runs</label>
+                            <input id="numRunsRaxml"></input>
+                        </div>
+                        <div class="field">
+                            <label>Rapid bootstrap random seed</label>
+                            <input id="rapidRandSeedRaxml"></input>
+                        </div>
+                        <div class="field">
+                            <label>Bootstrap random seed (b)</label>
+                            <input id="randSeedRaxml"></input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div id="makePhylo" class="ui green ok button">
+            <i class="checkmark icon"></i>Make Phylogeny
+        </div>
+    </div>
+</div>

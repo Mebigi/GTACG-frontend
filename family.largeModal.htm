@@ -1,0 +1,31 @@
+<div id="largeModal" class="ui basic modal">
+    <div class="ui icon header">
+        <i class="plus square icon"></i>
+        Too large family
+    </div>
+    <div class="content">
+        <p>Some families are too large that could cause problems in performance. Do not load some features will speed up this page. Which features do you want load?</p>
+        <br>
+        <p>Features:</p>
+        <div id="modalPhylo" class="ui checkbox">
+            <input type="checkbox">
+            <label>Show phylogeny</label>
+        </div><br>
+        <div id="modalAlign" class="ui checkbox">
+            <input type="checkbox">
+            <label>Show alignment</label>
+        </div><br>
+        <div id="modalGraph" class="ui checkbox">
+            <input type="checkbox">
+            <label>Show graph</label>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui red cancel button" onclick="loadAllSections();">
+            <i class="remove icon"></i>Load all features
+        </div>
+        <div class="ui green ok button" onclick="loadSections();">
+            <i class="checkmark icon"></i>Load selected features
+        </div>
+    </div>
+</div>

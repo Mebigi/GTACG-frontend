@@ -1,0 +1,130 @@
+<style>
+	.gridA {
+		display: grid;
+		grid-template-columns: auto 5px 1fr 20px auto 5px 1fr 20px auto 5px 70px;
+		grid-template-areas: 'labelA . objA . labelB . objB . labelC . objC';
+		align-items: center;
+		margin: 20px;
+	}
+
+	@media all and (max-width: 600px) {
+		.gridA {
+			display: grid;
+			grid-template-columns: auto 5px 1fr;
+			grid-template-areas: 'labelA . objA' 'labelB . objB' 'labelC . objC';
+			align-items: center;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			margin-left: 0px;
+			margin-right: 0px;
+		}
+		.item > div.text, ui.dropdown.item > div.text {
+			display:none !important;
+		}
+	}
+</style>
+
+<div id="blastModal" class="ui segment modal">
+	<div class="ui header">
+		<i class="search icon"></i>
+		Blast against the database
+	</div>
+	<div class="content">
+		<div class="ui form">
+			<div class="five fields">
+				<label>Program</label>
+				<div id="program" class="ui selection dropdown">
+					<input name="gender" value="blastp" type="hidden">
+					<i class="dropdown icon"></i>
+					<div class="text">BlastP</div>
+					<div class="menu">
+						<div class="item" data-value="blastp">BlastP</div>
+						<div class="item" data-value="blastx">BlastX</div>
+					</div>
+				</div>
+			</div>
+			<div class="field">
+				<label>Sequences</label>
+				<textarea id="textBlast"></textarea>
+			</div>
+			<div class="five fields">
+				<div class="field">
+					<div class="label">E-Value</div>
+					<input id="textEvalue"></input>
+				</div>
+				<div class="field">
+					<div class="label">Expected Threshold</div>
+					<input id="textTScore"></input>
+				</div>
+				<div class="field">
+					<div class="label">Word Size</div>
+					<input id="textWSize"></input>
+				</div>
+				<div class="field">
+					<div class="label">Min Coverage</div>
+					<input id="textCoverage" value="30"></input>
+				</div>
+				<div class="field">
+					<div class="label">Number of Alignmentos</div>
+					<input id="textNumAlign" value="100"></input>
+				</div>
+			</div>
+			<div class="five fields">
+				<div class="field">
+					<div class="label">Gap Opening Cost</div>
+					<input id="textGapOpening"></input>
+				</div>
+				<div class="field">
+					<div class="label">Gap Extension Cost</div>
+					<input id="textGapExtension"></input>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<div id="makeBlast" class="ui green ok button">
+			<i class="checkmark icon"></i>Make Blast
+		</div>
+	</div>
+</div>
+
+<div style="grid-area:lineB" class="ui attached menu">
+	<div class="ui dropdown link item">
+		<span class="text">
+			<i class="download icon"></i><div class="text">Download</div></span>
+		<div class="menu">
+			<a id="download-csv" class="item">Download CSV</a>
+			<a id="download-json" class="item">Download jSON</a>
+			<a id="download-xlsx" class="item">Download XLSX</a>
+		</div>
+	</div>
+	<a id="clearFilters" class="item"><i class="trash icon"></i><div class="text">Clear filters</div></a>
+	<a id="clearHeaderFilters" class="item"><i class="trash icon"></i><i class="heading icon"></i><div class="text">Clear header filters</div></a>
+	<div class="ui dropdown link item">
+		<i class="list ul icon"></i><div class="text">Group by</div>
+		<div class="menu">
+			<a onclick="groupTable(null)" class="item">Clear</a>
+			<div class="ui divider"></div>
+			<a onclick="groupTable('query')" class="item">Query</a>
+			<a onclick="groupTable('subject')" class="item">Subject</a>
+			<a onclick="groupTable('family')" class="item">Family</a>
+			<a onclick="groupTable('func')" class="item">Function</a>
+			<a onclick="groupTable('gen')" class="item">Genome</a>
+			<a onclick="groupTable('identity')" class="item">Identity</a>
+			<a onclick="groupTable('evaleu')" class="item">E-Value</a>
+			<a onclick="groupTable('gaps')" class="item">Gaps</a>
+			<a onclick="groupTable('score')" class="item">Score</a>
+			<a onclick="groupTable('bitscore')" class="item">Bit-Score</a>
+		</div>
+	</div>
+	<div class="right menu">
+		<a class="item" id="saveSubPage"><i class="save icon"></i></a>
+		<a class="item" id="removePage"><i class="x icon"></i></a>
+	</div>
+</div>
+
+<div style="grid-area:lineData;" id="example-table"></div>
+
+<div id="dimmerLoader" class="ui dimmer">
+	<div class="ui loader"></div>
+</div>

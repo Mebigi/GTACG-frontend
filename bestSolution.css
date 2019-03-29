@@ -1,0 +1,31 @@
+html, body {
+    margin:0;
+    padding:0;
+    height:100%
+}
+
+#pageHeader {
+    margin-bottom:0px;
+}
+.gridA {
+    display: grid;
+    grid-template-columns: auto 5px 1fr 20px auto 5px 1fr 20px auto 5px 70px;
+    grid-template-areas: 'labelA . objA . labelB . objB . labelC . objC';
+    align-items: center;
+    margin:20px;
+}
+@media all and (max-width: 600px) {
+    .gridA {
+        display: grid;
+        grid-template-columns: auto 5px 1fr;
+        grid-template-areas: 'labelA . objA' 'labelB . objB' 'labelC . objC';
+        align-items: center;
+        margin-top:20px;
+        margin-bottom:20px;
+        margin-left:0px;
+        margin-right:0px;
+    }
+    #example-table {	
+        height:calc(-210px + 100vh) !important;
+    }
+}

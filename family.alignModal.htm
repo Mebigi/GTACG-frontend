@@ -1,0 +1,94 @@
+<div id="alignModal" class="ui fullscreen segment modal">
+    <div class="ui header">
+        <i class="redo icon"></i>
+        Alignment
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>Program</label>
+                <div id="programAlign" class="ui selection dropdown">
+                    <input name="fieldProgramPhylo" type="hidden">
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Program</div>
+                    <div class="menu">
+                        <div class="item" data-value="modalClustalo">Clustal Omega</div>
+                        <!--div class="item" data-value="modalMafft">MAFFT</div-->
+                        <div class="item" data-value="modalMuscle">MUSCLE</div>
+                    </div>
+                </div>
+            </div>
+            <div id="modalClustalo">
+                <div class="four fields">
+                    <div class="field">
+                        <div class="label">Iterations</div>
+                        <input id="iterClustalo"></input>
+                    </div>
+                    <div class="field">
+                        <div class="label">Guidetree Iterations</div>
+                        <input id="iterGuideClustalo"></input>
+                    </div>
+                    <div class="field">
+                        <div class="label">HMM Iterations</div>
+                        <input id="iterHMMClustalo"></input>
+                    </div>
+                </div>
+            </div>
+            <div id="modalMafft">
+                <div class="four fields">
+                    <div class="field">
+                        <div class="label">Strategy</div>
+                        <div id="strategyMafft" class="ui selection dropdown">
+                            <input name="searchingFasttree" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Program</div>
+                            <div class="menu">
+                                <div class="item" data-value="--auto">Auto</div>
+                                <div class="divider"></div>
+                                <div class="header">
+                                    <i class="folder icon"></i> Speed-oriented methods
+                                </div>
+                                <div class="item" data-value="--retree 2 --maxiterate 2">FFT-NS-i</div>
+                                <div class="item" data-value="--retree 1 --maxiterate 0">FFT-NS-1</div>
+                                <div class="item" data-value="--retree 2 --maxiterate 0">FFT-NS-2</div>
+                                <div class="item" data-value="--retree 2 --maxiterate 0 --nofft">NW-NS-2</div>
+                                <div class="item" data-value="--retree 1 --maxiterate 0 --nofft --parttree ">NW-NS-PartTree-1</div>
+                                <div class="divider"></div>
+                                <div class="header">
+                                    <i class="folder icon"></i> Accuracy-oriented methods
+                                </div>
+                                <div class="item" data-value="--localpair --maxiterate 1000">L-INS-i</div>
+                                <div class="item" data-value="--globalpair --maxiterate 1000">G-INS-i</div>
+                                <div class="item" data-value="--ep 0 --genafpair --maxiterate 1000">E-INS-i</div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Gap Opening Penalty</div>
+                        <input id="gapOpeningMafft"></input>
+                    </div>
+                    <div class="field">
+                        <div class="label">Offset Value</div>
+                        <input id="offsetMafft"></input>
+                    </div>
+
+                    
+                </div>
+            </div>
+            <div id="modalMuscle">
+                <div class="four fields">
+                    <div class="field">
+                        <div class="label">Iterations</div>
+                        <input id="iterMuscle"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div id="makeAlign" class="ui green ok button">
+            <i class="checkmark icon"></i>Make Alignment
+        </div>
+    </div>
+</div>
